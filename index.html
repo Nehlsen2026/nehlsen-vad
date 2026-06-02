@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#003B6E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Nehlsen VAD">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nehlsen MV – Abfragebögen Außendienst</title>
+<style>
+  :root {
+    --blue: #003B6E;
+    --mid:  #005A9C;
+    --light:#D0E4F0;
+    --white:#FFFFFF;
+    --gray: #F5F5F5;
+    --text: #222222;
+    --green:#1A7A3C;
+    --red:  #C0392B;
+    --border:#CCCCCC;
+    --ans:  #FAFCFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #EEF3F8; color: var(--text); min-height: 100vh; }
+
+  /* ── HEADER ── */
+  #app-header {
+    background: var(--blue);
+    color: #fff;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  }
+  #app-header .logo { font-size: 1.2rem; font-weight: bold; letter-spacing: .5px; }
+  #app-header .logo span { color: var(--light); font-weight: normal; font-size: .9rem; }
+  #header-actions { display: flex; gap: 10px; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    border: none; border-radius: 6px; padding: 9px 18px;
+    font-size: .88rem; font-weight: bold; cursor: pointer;
+    transition: opacity .15s, transform .1s;
+  }
+  .btn:hover { opacity: .88; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn-primary   { background: var(--mid);   color: #fff; }
+  .btn-success   { background: var(--green); color: #fff; }
+  .btn-danger    { background: var(--red);   color: #fff; }
+  .btn-light     { background: #fff;         color: var(--blue); }
+  .btn-outline   { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.6); }
+  .btn-sm        { padding: 6px 12px; font-size: .8rem; }
+
+  /* ── SCREEN: BRANCH SELECTOR ── */
+  #screen-select { padding: 32px 24px; max-width: 960px; margin: 0 auto; }
+  #screen-select h1 { color: var(--blue); font-size: 1.6rem; margin-bottom: 6px; }
+  #screen-select p  { color: #555; margin-bottom: 28px; font-size: .95rem; }
+  .branch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .branch-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    transition: border-color .2s, box-shadow .2s, transform .15s;
+  }
+  .branch-card:hover { border-color: var(--mid); box-shadow: 0 4px 16px rgba(0,59,110,.15); transform: translateY(-3px); }
+  .branch-card .icon { font-size: 2.4rem; margin-bottom: 10px; }
+  .branch-card .label { font-weight: bold; color: var(--blue); font-size: .95rem; }
+
+  /* ── SCREEN: FORM ── */
+  #screen-form { display: none; padding: 24px; max-width: 900px; margin: 0 auto; }
+  .form-header {
+    background: var(--blue);
+    border-radius: 12px;
+    padding: 24px 28px;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+  .form-header .branch-icon { font-size: 2.2rem; }
+  .form-header h2 { font-size: 1.5rem; margin: 6px 0 4px; }
+  .form-header p  { color: var(--light); font-size: .9rem; }
+
+  /* Progress */
+  .progress-bar-wrap { background: rgba(255,255,255,.2); border-radius: 20px; height: 8px; margin-top: 14px; }
+  .progress-bar-fill { background: #fff; border-radius: 20px; height: 8px; transition: width .4s; }
+
+  /* Meta */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 6px rgba(0,0,0,.07);
+  }
+  @media(max-width:600px){ .meta-grid { grid-template-columns: 1fr; } }
+  .meta-grid label { font-size: .82rem; font-weight: bold; color: var(--blue); display: block; margin-bottom: 4px; }
+  .meta-grid input {
+    width: 100%; border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 10px; font-size: .9rem; background: var(--ans);
+  }
+  .meta-grid input:focus { outline: 2px solid var(--mid); border-color: var(--mid); }
+
+  /* Section */
+  .section-block {
+    background: #fff;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 6px rgba(0,0,0,.07);
+    overflow: hidden;
+  }
+  .section-title {
+    background: var(--blue);
+    color: #fff;
+    padding: 12px 20px;
+    font-weight: bold;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-body { padding: 18px 20px; }
+
+  /* Questions */
+  .question-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .q-nr {
+    background: var(--blue); color: #fff;
+    border-radius: 50%; width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .78rem; font-weight: bold; flex-shrink: 0; margin-top: 2px;
+  }
+  .q-body { flex: 1; }
+  .q-label { font-size: .88rem; color: #444; margin-bottom: 5px; }
+  .q-body textarea, .q-body input[type=text] {
+    width: 100%; border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 10px; font-size: .9rem; background: var(--ans);
+    resize: vertical; min-height: 52px; font-family: Arial, sans-serif;
+  }
+  .q-body textarea:focus, .q-body input[type=text]:focus { outline: 2px solid var(--mid); border-color: var(--mid); }
+
+  /* Checkboxes */
+  .check-label-main { font-size: .88rem; font-weight: bold; color: var(--blue); margin-bottom: 10px; }
+  .check-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .check-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--ans); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 10px; cursor: pointer;
+    transition: background .15s, border-color .15s;
+    user-select: none;
+  }
+  .check-item:hover { background: var(--light); border-color: var(--mid); }
+  .check-item.checked { background: var(--light); border-color: var(--mid); }
+  .check-item input { display: none; }
+  .check-box {
+    width: 18px; height: 18px; border: 2px solid var(--border);
+    border-radius: 4px; flex-shrink: 0; display: flex;
+    align-items: center; justify-content: center; background: #fff;
+    transition: background .15s, border-color .15s;
+  }
+  .check-item.checked .check-box { background: var(--mid); border-color: var(--mid); }
+  .check-item.checked .check-box::after { content: "✓"; color: #fff; font-size: .75rem; font-weight: bold; }
+  .check-item span { font-size: .83rem; color: var(--text); }
+
+  /* Recommendation block */
+  .rec-block { background: #EBF5EB; border-left: 4px solid var(--green); border-radius: 8px; padding: 16px 18px; }
+  .rec-block .rec-title { font-weight: bold; color: var(--green); margin-bottom: 12px; font-size: .95rem; }
+
+  /* ── SCREEN: SUMMARY ── */
+  #screen-summary { display: none; padding: 24px; max-width: 900px; margin: 0 auto; }
+  .summary-header { background: var(--green); color: #fff; border-radius: 12px; padding: 22px 28px; margin-bottom: 24px; }
+  .summary-header h2 { font-size: 1.4rem; }
+  .summary-header p  { color: #c8f0d0; font-size: .9rem; margin-top: 4px; }
+  .summary-section { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,.07); }
+  .summary-section h3 { color: var(--blue); font-size: 1rem; margin-bottom: 14px; border-bottom: 2px solid var(--light); padding-bottom: 8px; }
+  .summary-row { display: flex; gap: 12px; margin-bottom: 10px; font-size: .88rem; }
+  .summary-row .sq { background: var(--blue); color: #fff; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: bold; flex-shrink: 0; margin-top: 1px; }
+  .summary-row .sa { flex: 1; }
+  .summary-row .sq-label { font-weight: bold; color: #555; }
+  .summary-row .sq-val { color: var(--text); margin-top: 2px; white-space: pre-wrap; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .chip { background: var(--light); color: var(--blue); border-radius: 20px; padding: 3px 10px; font-size: .78rem; font-weight: bold; }
+
+  /* Toast */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--green); color: #fff;
+    border-radius: 8px; padding: 12px 20px;
+    font-size: .9rem; font-weight: bold;
+    box-shadow: 0 4px 16px rgba(0,0,0,.2);
+    display: none; z-index: 999;
+    animation: slideIn .3s ease;
+  }
+  @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  /* Print */
+  @media print {
+    #app-header, .btn, #screen-select, #screen-summary { display: none !important; }
+    #screen-form { display: block !important; padding: 0; }
+    .section-block { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app-header">
+  <div class="logo">NEHLSEN MV <span>| Abfragebögen Außendienst</span></div>
+  <div id="header-actions">
+    <button id="install-btn">📲 App installieren</button>
+    <button class="btn btn-outline btn-sm" onclick="goHome()">🏠 Übersicht</button>
+    <button class="btn btn-light btn-sm" id="btn-print" style="display:none" onclick="printPDF()">🖨️ PDF speichern</button>
+    <button class="btn btn-success btn-sm" id="btn-summary" style="display:none" onclick="showSummary()">📋 Zusammenfassung</button>
+    <button class="btn btn-danger btn-sm" id="btn-reset" style="display:none" onclick="resetForm()">🗑️ Zurücksetzen</button>
+  </div>
+</div>
+
+<!-- SCREEN 1: Branch selection -->
+<div id="screen-select">
+  <h1>Branche auswählen</h1>
+  <p>Wählen Sie die Branche des Kunden — der passende Abfragebogen wird automatisch geladen.</p>
+  <div class="branch-grid" id="branch-grid"></div>
+</div>
+
+<!-- SCREEN 2: Form -->
+<div id="screen-form">
+  <div class="form-header" id="form-header">
+    <div class="branch-icon" id="fh-icon"></div>
+    <h2 id="fh-name"></h2>
+    <p id="fh-intro"></p>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+  <div id="form-body"></div>
+  <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:8px;margin-bottom:40px;">
+    <button class="btn btn-primary" onclick="showSummary()">📋 Zusammenfassung anzeigen →</button>
+  </div>
+</div>
+
+<!-- SCREEN 3: Summary -->
+<div id="screen-summary">
+  <div class="summary-header">
+    <h2 id="sum-title">Zusammenfassung</h2>
+    <p id="sum-sub"></p>
+  </div>
+  <div id="sum-body"></div>
+  <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:8px;margin-bottom:40px;">
+    <button class="btn btn-primary" onclick="showForm()">✏️ Zurück zum Bogen</button>
+    <button class="btn btn-success" onclick="printPDF()">🖨️ PDF speichern</button>
+  </div>
+</div>
+
+<div id="toast">✅ Gespeichert!</div>
+
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+const BRANCHEN = [
+  {
+    id: "industrie", icon: "🏭", name: "Industrie & Produktion",
+    intro: "Abfallanalyse für Industrie- und Produktionsbetriebe",
+    color: "#003B6E",
+    sections: [
+      {
+        title: "Betriebsprofil", icon: "🏢",
+        fields: [
+          { id:"q1", type:"text", label:"Art der Produktion / Branchenschwerpunkt?" },
+          { id:"q2", type:"text", label:"Anzahl Mitarbeitende & Schichtbetrieb?" },
+          { id:"q3", type:"text", label:"Fläche des Betriebs (ca.)?" },
+          { id:"q4", type:"text", label:"Bestehender Entsorgungspartner?" },
+        ]
+      },
+      {
+        title: "Abfallfraktionen", icon: "♻️",
+        fields: [
+          { id:"c1", type:"check", label:"Welche Abfallfraktionen fallen regelmäßig an?",
+            options:["Metallschrott","Kunststoffabfälle","Verpackungen (Karton/Folie)","Produktionsausschuss","Schlacken / Stäube","Lösemittel / Chemikalien","Lacke / Farben","Altöle / Schmierstoffe","Gewerbeabfälle (gemischt)","Sperrmüll","Elektronikschrott","Sonstiges"] },
+          { id:"q5", type:"textarea", label:"Geschätztes Abfallaufkommen pro Monat (in t oder m³)?" },
+          { id:"q6", type:"textarea", label:"Gibt es saisonale Schwankungen im Abfallaufkommen?" },
+          { id:"q7", type:"textarea", label:"Welche Abfälle unterliegen der Nachweispflicht (gef. Abfälle)?" },
+        ]
+      },
+      {
+        title: "Entsorgungsorganisation", icon: "📦",
+        fields: [
+          { id:"q8",  type:"textarea", label:"Wie viele & welche Behälter sind aktuell im Einsatz?" },
+          { id:"q9",  type:"text",     label:"Abholrhythmus je Fraktion?" },
+          { id:"q10", type:"textarea", label:"Gibt es interne Sortiersysteme / Wertstoffinseln?" },
+          { id:"q11", type:"text",     label:"Wer ist intern für Abfallthemen zuständig?" },
+          { id:"q12", type:"textarea", label:"Bestehen Abfallbilanzen / Entsorgungsnachweise?" },
+        ]
+      },
+      {
+        title: "Optimierungspotenzial & Wünsche", icon: "💡",
+        fields: [
+          { id:"q13", type:"textarea", label:"Wo sehen Sie aktuell die größten Probleme?" },
+          { id:"q14", type:"textarea", label:"Interesse an Abfallmanagementkonzept / Beratung?" },
+          { id:"q15", type:"textarea", label:"Interesse an Nachhaltigkeitsbericht / ESG-Dokumentation?" },
+        ]
+      },
+    ]
+  },
+  {
+    id: "bau", icon: "🏗️", name: "Bau & Abbruch",
+    intro: "Abfallanalyse für Bau-, Abbruch- und Tiefbauunternehmen",
+    color: "#5C4000",
+    sections: [
+      {
+        title: "Betriebsprofil", icon: "🏢",
+        fields: [
+          { id:"q1", type:"text", label:"Schwerpunkt: Hochbau / Tiefbau / Abbruch / Sanierung?" },
+          { id:"q2", type:"text", label:"Anzahl gleichzeitig laufender Baustellen?" },
+          { id:"q3", type:"text", label:"Projektgrößen (klein / mittel / Großprojekte)?" },
+          { id:"q4", type:"text", label:"Bestehender Entsorgungspartner?" },
+        ]
+      },
+      {
+        title: "Abfallfraktionen", icon: "♻️",
+        fields: [
+          { id:"c1", type:"check", label:"Welche Materialien fallen typischerweise an?",
+            options:["Bauschutt (Beton/Ziegel)","Bodenaushub","Altholz","Metalle / Bewehrungsstahl","Mineralwolle / Dämmstoffe","Asbest","Teerhaltige Materialien","Gemischter Bauschutt","Kunststoffe / Folien","Gips / Trockenbau","Glas","Elektroschrott"] },
+          { id:"q5", type:"textarea", label:"Fallen regelmäßig gefährliche Abfälle an (Asbest, KMF, Teer)?" },
+          { id:"q6", type:"textarea", label:"Wie wird aktuell mit Nachweispflichten umgegangen?" },
+          { id:"q7", type:"text",     label:"Durchschnittliches Abfallvolumen pro Baustelle?" },
+        ]
+      },
+      {
+        title: "Logistik & Behälter", icon: "🚛",
+        fields: [
+          { id:"q8",  type:"textarea", label:"Werden Container direkt auf Baustellen benötigt?" },
+          { id:"q9",  type:"text",     label:"Wie kurzfristig müssen Container verfügbar sein?" },
+          { id:"q10", type:"textarea", label:"Werden Big Bags oder Absetzcontainer bevorzugt?" },
+          { id:"q11", type:"textarea", label:"Gibt es Genehmigungsbedarfe für öffentliche Flächen?" },
+        ]
+      },
+      {
+        title: "Optimierungspotenzial", icon: "💡",
+        fields: [
+          { id:"q12", type:"textarea", label:"Größte Herausforderungen bei der Baustellenentsorgung?" },
+          { id:"q13", type:"textarea", label:"Interesse an Sammelentsorgungsnachweis (Asbest/KMF)?" },
+          { id:"q14", type:"textarea", label:"Interesse an festen Rahmenverträgen für laufende Projekte?" },
+        ]
+      },
+    ]
+  },
+  {
+    id: "werkstatt", icon: "🔧", name: "Werkstätten",
+    intro: "Abfallanalyse für Kfz-, Metall- und Holzwerkstätten",
+    color: "#3A3A3A",
+    sections: [
+      {
+        title: "Betriebsprofil", icon: "🏢",
+        fields: [
+          { id:"q1", type:"text", label:"Art der Werkstatt (Kfz / Metall / Holz / Sonstiges)?" },
+          { id:"q2", type:"text", label:"Anzahl Mitarbeitende?" },
+          { id:"q3", type:"text", label:"Anzahl Fahrzeuge / Aufträge pro Monat (Kfz)?" },
+          { id:"q4", type:"text", label:"Bestehender Entsorgungspartner?" },
+        ]
+      },
+      {
+        title: "Abfallfraktionen", icon: "♻️",
+        fields: [
+          { id:"c1", type:"check", label:"Welche Abfälle fallen regelmäßig an?",
+            options:["Altöle","Ölfilter","Bremsflüssigkeit","Kühlmittel / Frostschutz","Altreifen","Altbatterien / Akkus","Metallschrott","Karosserieteile","Lösemittel / Reiniger","Lacke / Farbreste","Leere Gebinde / Spraydosen","Elektronik / Steuergeräte","Holzabfälle","Restmüll"] },
+          { id:"q5", type:"text",     label:"Monatliches Altölaufkommen (ca. in Liter)?" },
+          { id:"q6", type:"text",     label:"Monatliches Reifenaufkommen (Anzahl)?" },
+          { id:"q7", type:"textarea", label:"Werden gefährliche Abfälle aktuell korrekt nachgewiesen?" },
+        ]
+      },
+      {
+        title: "Abscheider & Infrastruktur", icon: "🔩",
+        fields: [
+          { id:"q8",  type:"text",     label:"Ist ein Leichtflüssigkeitsabscheider vorhanden?" },
+          { id:"q9",  type:"text",     label:"Wer reinigt / entsorgt den Abscheider aktuell?" },
+          { id:"q10", type:"text",     label:"Wie häufig wird der Abscheider entleert?" },
+          { id:"q11", type:"textarea", label:"Gibt es Dokumentation / Wartungsprotokoll?" },
+        ]
+      },
+      {
+        title: "Optimierungspotenzial", icon: "💡",
+        fields: [
+          { id:"q12", type:"textarea", label:"Größte Probleme bei der aktuellen Entsorgung?" },
+          { id:"q13", type:"textarea", label:"Interesse an Sammelentsorgungsnachweis für gef. Abfälle?" },
+          { id:"q14", type:"textarea", label:"Interesse an regelmäßiger Abholung (Turnus)?" },
+        ]
+      },
+    ]
+  },
+  {
+    id: "landwirtschaft", icon: "🌾", name: "Landwirtschaft",
+    intro: "Abfallanalyse für landwirtschaftliche Betriebe",
+    color: "#2E5E1E",
+    sections: [
+      {
+        title: "Betriebsprofil", icon: "🏢",
+        fields: [
+          { id:"q1", type:"text", label:"Art des Betriebs (Ackerbau / Viehwirtschaft / Gemischt)?" },
+          { id:"q2", type:"text", label:"Betriebsgröße (ha)?" },
+          { id:"q3", type:"text", label:"Anzahl Mitarbeitende / Saisonarbeiter?" },
+          { id:"q4", type:"text", label:"Bestehender Entsorgungspartner?" },
+        ]
+      },
+      {
+        title: "Abfallfraktionen", icon: "♻️",
+        fields: [
+          { id:"c1", type:"check", label:"Welche Abfälle fallen auf dem Betrieb an?",
+            options:["Silagefolien","Stretchfolien (Ballen)","Mulch- / Vliesfolien","PSM-Behälter (leer)","PSM-Restmengen","Düngemittelsäcke","Altöle / Getriebeöl","Altreifen (Traktor)","Altmetall / Maschinenteile","Altbatterien","Elektroschrott","Verpackungen (Futter)","Holzabfälle / Zäune"] },
+          { id:"q5", type:"text",     label:"Folienmenge pro Saison (ca. in t oder Anzahl Rollen)?" },
+          { id:"q6", type:"textarea", label:"Wie werden PSM-Behälter aktuell entsorgt?" },
+          { id:"q7", type:"text",     label:"Altölaufkommen pro Jahr (ca. in Liter)?" },
+        ]
+      },
+      {
+        title: "Logistik & Lagerung", icon: "🚜",
+        fields: [
+          { id:"q8",  type:"textarea", label:"Gibt es einen Sammelplatz für Abfälle auf dem Hof?" },
+          { id:"q9",  type:"text",     label:"Wie weit ist der nächste Wertstoffhof entfernt?" },
+          { id:"q10", type:"textarea", label:"Werden Abfälle aktuell selbst angeliefert oder abgeholt?" },
+          { id:"q11", type:"textarea", label:"Gibt es saisonale Spitzen beim Abfallaufkommen?" },
+        ]
+      },
+      {
+        title: "Optimierungspotenzial", icon: "💡",
+        fields: [
+          { id:"q12", type:"textarea", label:"Größte Herausforderungen bei der Hofentsorgung?" },
+          { id:"q13", type:"textarea", label:"Interesse an Containerlösung für Agrarfolien?" },
+          { id:"q14", type:"textarea", label:"Interesse an Abholservice für Altöl & Sonderabfälle?" },
+        ]
+      },
+    ]
+  },
+  {
+    id: "handel", icon: "🛒", name: "Handel & Logistik",
+    intro: "Abfallanalyse für Handels- und Logistikunternehmen",
+    color: "#005A9C",
+    sections: [
+      {
+        title: "Betriebsprofil", icon: "🏢",
+        fields: [
+          { id:"q1", type:"text", label:"Art des Unternehmens (Einzel- / Großhandel / Logistik)?" },
+          { id:"q2", type:"text", label:"Anzahl Standorte / Filialen?" },
+          { id:"q3", type:"text", label:"Lagerfläche (ca. in m²)?" },
+          { id:"q4", type:"text", label:"Bestehender Entsorgungspartner?" },
+        ]
+      },
+      {
+        title: "Abfallfraktionen", icon: "♻️",
+        fields: [
+          { id:"c1", type:"check", label:"Welche Abfälle fallen regelmäßig an?",
+            options:["Kartonagen / Pappe","Stretchfolie","Verpackungsfolie","Holzpaletten","Lebensmittelabfälle (MHD)","Elektronikschrott","Restmüll","Metallschrott","Sperrmüll","Vertrauliche Dokumente"] },
+          { id:"q5", type:"text",     label:"Tägliches / wöchentliches Verpackungsaufkommen (ca.)?" },
+          { id:"q6", type:"textarea", label:"Werden Kartonagen aktuell gepresst (Ballenpresse)?" },
+          { id:"q7", type:"textarea", label:"Gibt es Rücknahme- oder Retourenprozesse?" },
+        ]
+      },
+      {
+        title: "Entsorgungsorganisation", icon: "📦",
+        fields: [
+          { id:"q8",  type:"text",     label:"Anzahl & Größe der aktuellen Abfallbehälter?" },
+          { id:"q9",  type:"text",     label:"Abholrhythmus je Fraktion?" },
+          { id:"q10", type:"textarea", label:"Gibt es zentrale Wertstoffinseln / Sortierstationen?" },
+          { id:"q11", type:"textarea", label:"Werden Entsorgungskosten je Standort erfasst?" },
+        ]
+      },
+      {
+        title: "Optimierungspotenzial", icon: "💡",
+        fields: [
+          { id:"q12", type:"textarea", label:"Größte Probleme bei der aktuellen Entsorgung?" },
+          { id:"q13", type:"textarea", label:"Interesse an zentralem Abfallmanagement für alle Standorte?" },
+          { id:"q14", type:"textarea", label:"Interesse an Aktenvernichtung (BDSG)?" },
+        ]
+      },
+    ]
+  },
+  {
+    id: "gastro", icon: "🍽️", name: "Gastronomie & Lebensmittel",
+    intro: "Abfallanalyse für Gastronomiebetriebe und Lebensmittelhersteller",
+    color: "#8B1A00",
+    sections: [
+      {
+        title: "Betriebsprofil", icon: "🏢",
+        fields: [
+          { id:"q1", type:"text", label:"Art des Betriebs (Restaurant / Catering / Produktion / Hotel)?" },
+          { id:"q2", type:"text", label:"Anzahl Sitzplätze / Mahlzeiten pro Tag?" },
+          { id:"q3", type:"text", label:"Anzahl Mitarbeitende?" },
+          { id:"q4", type:"text", label:"Bestehender Entsorgungspartner?" },
+        ]
+      },
+      {
+        title: "Abfallfraktionen", icon: "♻️",
+        fields: [
+          { id:"c1", type:"check", label:"Welche Abfälle fallen regelmäßig an?",
+            options:["Speisereste / Bioabfall","Frittierfett / Speiseöl","Verpackungen (Glas)","Verpackungen (Karton)","Kunststoffverpackungen","Restmüll","Lebensmittel (MHD abgelaufen)","Reinigungsmittelgebinde"] },
+          { id:"q5", type:"text", label:"Wöchentliches Bioabfallaufkommen (ca. in kg)?" },
+          { id:"q6", type:"text", label:"Wie häufig wird Bioabfall aktuell abgeholt?" },
+          { id:"q7", type:"text", label:"Wie viel Frittierfett fällt pro Woche an (ca. in Liter)?" },
+        ]
+      },
+      {
+        title: "Fettabscheider", icon: "🔩",
+        fields: [
+          { id:"q8",  type:"text",     label:"Ist ein Fettabscheider vorhanden?" },
+          { id:"q9",  type:"text",     label:"Wer reinigt / entsorgt den Abscheider aktuell?" },
+          { id:"q10", type:"text",     label:"Entleerungsintervall (monatlich / quartalsweise)?" },
+          { id:"q11", type:"textarea", label:"Liegt eine aktuelle Wartungsdokumentation vor?" },
+          { id:"q12", type:"textarea", label:"Gibt es Probleme mit Gerüchen oder Rückstau?" },
+        ]
+      },
+      {
+        title: "Optimierungspotenzial", icon: "💡",
+        fields: [
+          { id:"q13", type:"textarea", label:"Größte Herausforderungen bei der Entsorgung?" },
+          { id:"q14", type:"textarea", label:"Interesse an regelmäßigem Abscheiderservice?" },
+          { id:"q15", type:"textarea", label:"Interesse an zusätzlicher Wertstofftrennung?" },
+        ]
+      },
+    ]
+  },
+  {
+    id: "gesundheit", icon: "🏥", name: "Gesundheitswesen",
+    intro: "Abfallanalyse für Kliniken, Praxen und Pflegeeinrichtungen",
+    color: "#006060",
+    sections: [
+      {
+        title: "Betriebsprofil", icon: "🏢",
+        fields: [
+          { id:"q1", type:"text", label:"Art der Einrichtung (Klinik / Praxis / Pflege / Labor)?" },
+          { id:"q2", type:"text", label:"Anzahl Betten / Patienten pro Tag?" },
+          { id:"q3", type:"text", label:"Anzahl Mitarbeitende?" },
+          { id:"q4", type:"text", label:"Bestehender Entsorgungspartner?" },
+        ]
+      },
+      {
+        title: "Abfallfraktionen", icon: "♻️",
+        fields: [
+          { id:"c1", type:"check", label:"Welche Abfälle fallen regelmäßig an?",
+            options:["Infektiöse Abfälle (AS 18 01 03*)","Kanülen / Spitzen (Sharps)","Verbandsmaterial","Pharmakolog. Abfälle","Zytostatika-Abfälle","Amalgam","Röntgenchemikalien","Desinfektionsmittel","Verpackungen","Restmüll (hausmüllähnlich)","Papier / Akten","Elektronikschrott"] },
+          { id:"q5", type:"text",     label:"Monatliches Aufkommen infektiöser Abfälle (ca. in kg)?" },
+          { id:"q6", type:"textarea", label:"Wie erfolgt aktuell die Entsorgung gefährlicher Abfälle?" },
+          { id:"q7", type:"textarea", label:"Werden Entsorgungsnachweise lückenlos geführt?" },
+        ]
+      },
+      {
+        title: "Nachweisführung & Compliance", icon: "📋",
+        fields: [
+          { id:"q8",  type:"textarea", label:"Gibt es ein internes Abfallmanagement / Abfallbeauftragten?" },
+          { id:"q9",  type:"textarea", label:"Bestehen Sammelentsorgungsnachweise?" },
+          { id:"q10", type:"textarea", label:"Wurden in der Vergangenheit Beanstandungen festgestellt?" },
+          { id:"q11", type:"textarea", label:"Gibt es Anforderungen aus Zertifizierungen (z. B. DIN EN ISO)?" },
+        ]
+      },
+      {
+        title: "Optimierungspotenzial", icon: "💡",
+        fields: [
+          { id:"q12", type:"textarea", label:"Größte Herausforderungen bei der Entsorgung?" },
+          { id:"q13", type:"textarea", label:"Interesse an Aktenvernichtung (BDSG) für Patientenakten?" },
+          { id:"q14", type:"textarea", label:"Interesse an Abfallmanagementberatung / Schulung?" },
+        ]
+      },
+    ]
+  },
+  {
+    id: "buero", icon: "🏢", name: "Büro & Verwaltung",
+    intro: "Abfallanalyse für Büros, Behörden und Dienstleistungsunternehmen",
+    color: "#444466",
+    sections: [
+      {
+        title: "Betriebsprofil", icon: "🏢",
+        fields: [
+          { id:"q1", type:"text", label:"Art des Unternehmens / der Behörde?" },
+          { id:"q2", type:"text", label:"Anzahl Mitarbeitende am Standort?" },
+          { id:"q3", type:"text", label:"Bürofläche (ca. in m²)?" },
+          { id:"q4", type:"text", label:"Bestehender Entsorgungspartner?" },
+        ]
+      },
+      {
+        title: "Abfallfraktionen", icon: "♻️",
+        fields: [
+          { id:"c1", type:"check", label:"Welche Abfälle fallen regelmäßig an?",
+            options:["Papier / Akten (vertraulich)","Papier / Akten (nicht vertraulich)","Elektronikschrott (IT)","Elektronikschrott (Drucker)","Verpackungen","Restmüll","Sperrmüll (Büromöbel)","Leuchtstoffröhren / Batterien"] },
+          { id:"q5", type:"text",     label:"Monatliches Papieraufkommen (ca.)?" },
+          { id:"q6", type:"textarea", label:"Wie werden vertrauliche Dokumente aktuell vernichtet?" },
+          { id:"q7", type:"text",     label:"Wie häufig werden IT-Geräte ausgetauscht / entsorgt?" },
+        ]
+      },
+      {
+        title: "Datenschutz & Compliance", icon: "🔒",
+        fields: [
+          { id:"q8",  type:"text",     label:"Gibt es einen Datenschutzbeauftragten?" },
+          { id:"q9",  type:"textarea", label:"Werden Vernichtungszertifikate benötigt?" },
+          { id:"q10", type:"textarea", label:"Gibt es Anforderungen an Sicherheitsstufen (DIN 66399)?" },
+          { id:"q11", type:"textarea", label:"Werden Akten vor Ort oder extern vernichtet?" },
+        ]
+      },
+      {
+        title: "Optimierungspotenzial", icon: "💡",
+        fields: [
+          { id:"q12", type:"textarea", label:"Größte Herausforderungen bei der Entsorgung?" },
+          { id:"q13", type:"textarea", label:"Interesse an zertifizierter Aktenvernichtung (BDSG)?" },
+          { id:"q14", type:"textarea", label:"Interesse an regelmäßiger IT-Schrott-Abholung?" },
+        ]
+      },
+    ]
+  },
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let currentBranche = null;
+let formData = {};   // { fieldId: value }
+let metaData = {};   // { unternehmen, ansprechpartner, adresse, telefon, datum, berater }
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function init() {
+  const grid = document.getElementById("branch-grid");
+  BRANCHEN.forEach(b => {
+    const card = document.createElement("div");
+    card.className = "branch-card";
+    card.innerHTML = `<div class="icon">${b.icon}</div><div class="label">${b.name}</div>`;
+    card.onclick = () => loadBranche(b);
+    grid.appendChild(card);
+  });
+}
+
+// ─── LOAD BRANCHE ─────────────────────────────────────────────────────────────
+function loadBranche(b) {
+  currentBranche = b;
+  formData = {};
+  metaData = {};
+
+  // Header
+  document.getElementById("fh-icon").textContent = b.icon;
+  document.getElementById("fh-name").textContent = b.name;
+  document.getElementById("fh-intro").textContent = b.intro;
+  document.getElementById("form-header").style.background = b.color;
+  document.getElementById("progress-fill").style.width = "0%";
+
+  // Build form
+  const body = document.getElementById("form-body");
+  body.innerHTML = "";
+
+  // Meta block
+  const metaDiv = document.createElement("div");
+  metaDiv.className = "meta-grid";
+  const metaFields = [
+    { id:"unternehmen",    label:"Unternehmen" },
+    { id:"ansprechpartner",label:"Ansprechpartner" },
+    { id:"adresse",        label:"Adresse" },
+    { id:"telefon",        label:"Telefon / E-Mail" },
+    { id:"datum",          label:"Datum", value: new Date().toLocaleDateString("de-DE") },
+    { id:"berater",        label:"Nehlsen-Berater/in" },
+  ];
+  metaFields.forEach(f => {
+    const wrap = document.createElement("div");
+    wrap.innerHTML = `<label>${f.label}</label><input type="text" id="meta_${f.id}" value="${f.value||''}" placeholder="${f.label} eingeben…">`;
+    wrap.querySelector("input").addEventListener("input", e => {
+      metaData[f.id] = e.target.value;
+      updateProgress();
+    });
+    metaDiv.appendChild(wrap);
+  });
+  body.appendChild(metaDiv);
+
+  // Sections
+  b.sections.forEach(sec => {
+    const block = document.createElement("div");
+    block.className = "section-block";
+
+    const titleEl = document.createElement("div");
+    titleEl.className = "section-title";
+    titleEl.style.background = b.color;
+    titleEl.innerHTML = `<span>${sec.icon}</span><span>${sec.title}</span>`;
+    block.appendChild(titleEl);
+
+    const secBody = document.createElement("div");
+    secBody.className = "section-body";
+
+    let qNr = 1;
+    sec.fields.forEach(f => {
+      if (f.type === "check") {
+        const wrap = document.createElement("div");
+        wrap.innerHTML = `<div class="check-label-main">${f.label}</div>`;
+        const grid = document.createElement("div");
+        grid.className = "check-grid";
+        f.options.forEach(opt => {
+          const item = document.createElement("label");
+          item.className = "check-item";
+          item.innerHTML = `<input type="checkbox"><div class="check-box"></div><span>${opt}</span>`;
+          item.querySelector("input").addEventListener("change", e => {
+            if (!formData[f.id]) formData[f.id] = [];
+            if (e.target.checked) { formData[f.id].push(opt); item.classList.add("checked"); }
+            else { formData[f.id] = formData[f.id].filter(x => x !== opt); item.classList.remove("checked"); }
+            updateProgress();
+            autoSave();
+          });
+          grid.appendChild(item);
+        });
+        wrap.appendChild(grid);
+        secBody.appendChild(wrap);
+      } else {
+        const row = document.createElement("div");
+        row.className = "question-row";
+        const nr = document.createElement("div");
+        nr.className = "q-nr";
+        nr.textContent = qNr++;
+        const qb = document.createElement("div");
+        qb.className = "q-body";
+        const lbl = document.createElement("div");
+        lbl.className = "q-label";
+        lbl.textContent = f.label;
+        qb.appendChild(lbl);
+        if (f.type === "textarea") {
+          const ta = document.createElement("textarea");
+          ta.id = `field_${f.id}`;
+          ta.rows = 2;
+          ta.placeholder = "Antwort eingeben…";
+          ta.addEventListener("input", e => { formData[f.id] = e.target.value; updateProgress(); autoSave(); });
+          qb.appendChild(ta);
+        } else {
+          const inp = document.createElement("input");
+          inp.type = "text";
+          inp.id = `field_${f.id}`;
+          inp.placeholder = "Antwort eingeben…";
+          inp.addEventListener("input", e => { formData[f.id] = e.target.value; updateProgress(); autoSave(); });
+          qb.appendChild(inp);
+        }
+        row.appendChild(nr);
+        row.appendChild(qb);
+        secBody.appendChild(row);
+      }
+    });
+
+    block.appendChild(secBody);
+    body.appendChild(block);
+  });
+
+  // Recommendation block
+  const recBlock = document.createElement("div");
+  recBlock.className = "section-block";
+  const recTitle = document.createElement("div");
+  recTitle.className = "section-title";
+  recTitle.style.background = "#1A7A3C";
+  recTitle.innerHTML = `<span>✅</span><span>Empfehlungen des Beraters (intern)</span>`;
+  recBlock.appendChild(recTitle);
+  const recBody = document.createElement("div");
+  recBody.className = "section-body";
+  recBody.innerHTML = `<div class="rec-block">
+    <div class="rec-title">Empfohlene Nehlsen-Leistungen & nächste Schritte</div>`;
+
+  const recFields = [
+    { id:"rec_leistungen", label:"Empfohlene Leistungen:", type:"textarea" },
+    { id:"rec_schritte",   label:"Nächste Schritte / Folgetermin:", type:"textarea" },
+    { id:"rec_wert",       label:"Geschätzter Angebotswert:", type:"text" },
+    { id:"rec_notizen",    label:"Weitere Notizen:", type:"textarea" },
+  ];
+  recFields.forEach(f => {
+    const row = document.createElement("div");
+    row.style.marginBottom = "12px";
+    const lbl = document.createElement("div");
+    lbl.className = "q-label";
+    lbl.style.fontWeight = "bold";
+    lbl.textContent = f.label;
+    row.appendChild(lbl);
+    if (f.type === "textarea") {
+      const ta = document.createElement("textarea");
+      ta.rows = 2;
+      ta.placeholder = "Eingabe…";
+      ta.style.cssText = "width:100%;border:1px solid #ccc;border-radius:6px;padding:8px;font-family:Arial,sans-serif;font-size:.9rem;background:#fff;resize:vertical;";
+      ta.addEventListener("input", e => { formData[f.id] = e.target.value; autoSave(); });
+      row.appendChild(ta);
+    } else {
+      const inp = document.createElement("input");
+      inp.type = "text";
+      inp.placeholder = "Eingabe…";
+      inp.style.cssText = "width:100%;border:1px solid #ccc;border-radius:6px;padding:8px;font-family:Arial,sans-serif;font-size:.9rem;background:#fff;";
+      inp.addEventListener("input", e => { formData[f.id] = e.target.value; autoSave(); });
+      row.appendChild(inp);
+    }
+    recBody.querySelector(".rec-block").appendChild(row);
+  });
+
+  recBody.querySelector(".rec-block").innerHTML += "";
+  recBlock.appendChild(recBody);
+  body.appendChild(recBlock);
+
+  // Show form
+  document.getElementById("screen-select").style.display = "none";
+  document.getElementById("screen-form").style.display = "block";
+  document.getElementById("screen-summary").style.display = "none";
+  document.getElementById("btn-print").style.display = "inline-block";
+  document.getElementById("btn-summary").style.display = "inline-block";
+  document.getElementById("btn-reset").style.display = "inline-block";
+  window.scrollTo(0, 0);
+}
+
+// ─── PROGRESS ─────────────────────────────────────────────────────────────────
+function updateProgress() {
+  if (!currentBranche) return;
+  let total = 6; // meta fields
+  let filled = Object.values(metaData).filter(v => v && v.trim()).length;
+  currentBranche.sections.forEach(sec => {
+    sec.fields.forEach(f => {
+      total++;
+      const v = formData[f.id];
+      if (v && (Array.isArray(v) ? v.length > 0 : v.trim())) filled++;
+    });
+  });
+  const pct = Math.round((filled / total) * 100);
+  document.getElementById("progress-fill").style.width = pct + "%";
+}
+
+// ─── AUTOSAVE ─────────────────────────────────────────────────────────────────
+let saveTimer;
+function autoSave() {
+  clearTimeout(saveTimer);
+  saveToStorage();
+    saveTimer = setTimeout(() => {
+    const toast = document.getElementById("toast");
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 1800);
+  }, 800);
+}
+
+// ─── SUMMARY ──────────────────────────────────────────────────────────────────
+function showSummary() {
+  const b = currentBranche;
+  document.getElementById("sum-title").textContent = `${b.icon}  ${b.name} – Zusammenfassung`;
+  const sub = metaData.unternehmen ? `Kunde: ${metaData.unternehmen}` : "";
+  document.getElementById("sum-sub").textContent = sub + (metaData.datum ? `  |  Datum: ${metaData.datum}` : "") + (metaData.berater ? `  |  Berater: ${metaData.berater}` : "");
+
+  const sumBody = document.getElementById("sum-body");
+  sumBody.innerHTML = "";
+
+  // Meta summary
+  const metaSec = document.createElement("div");
+  metaSec.className = "summary-section";
+  metaSec.innerHTML = `<h3>📋 Stammdaten</h3>`;
+  const metaFields = ["unternehmen","ansprechpartner","adresse","telefon","datum","berater"];
+  const metaLabels = ["Unternehmen","Ansprechpartner","Adresse","Telefon / E-Mail","Datum","Berater"];
+  metaFields.forEach((f, i) => {
+    const v = document.getElementById(`meta_${f}`)?.value || metaData[f] || "—";
+    metaSec.innerHTML += `<div class="summary-row"><div class="sq-label" style="min-width:160px;font-size:.85rem;color:#555;">${metaLabels[i]}:</div><div class="sq-val">${v || "—"}</div></div>`;
+  });
+  sumBody.appendChild(metaSec);
+
+  // Sections
+  b.sections.forEach(sec => {
+    const secEl = document.createElement("div");
+    secEl.className = "summary-section";
+    secEl.innerHTML = `<h3>${sec.icon} ${sec.title}</h3>`;
+    let qNr = 1;
+    sec.fields.forEach(f => {
+      const v = formData[f.id];
+      if (f.type === "check") {
+        const chips = (v && v.length) ? v.map(x => `<span class="chip">${x}</span>`).join("") : `<span style="color:#aaa;font-size:.85rem;">Keine Auswahl</span>`;
+        secEl.innerHTML += `<div class="summary-row"><div class="sq-label" style="min-width:100%;font-size:.85rem;color:#555;margin-bottom:6px;">${f.label}</div></div><div class="chips" style="margin-bottom:12px;">${chips}</div>`;
+      } else {
+        const val = (v && v.trim()) ? v : `<span style="color:#aaa;">—</span>`;
+        secEl.innerHTML += `<div class="summary-row"><div class="sq" style="background:var(--blue)">${qNr++}</div><div class="sa"><div class="sq-label">${f.label}</div><div class="sq-val">${val}</div></div></div>`;
+      }
+    });
+    sumBody.appendChild(secEl);
+  });
+
+  // Rec summary
+  const recEl = document.createElement("div");
+  recEl.className = "summary-section";
+  recEl.style.borderLeft = "4px solid #1A7A3C";
+  recEl.innerHTML = `<h3 style="color:#1A7A3C">✅ Empfehlungen des Beraters</h3>`;
+  const recFields = [
+    {id:"rec_leistungen", label:"Empfohlene Leistungen"},
+    {id:"rec_schritte",   label:"Nächste Schritte"},
+    {id:"rec_wert",       label:"Angebotswert"},
+    {id:"rec_notizen",    label:"Notizen"},
+  ];
+  recFields.forEach(f => {
+    const v = formData[f.id];
+    const val = (v && v.trim()) ? v : `<span style="color:#aaa;">—</span>`;
+    recEl.innerHTML += `<div class="summary-row"><div class="sq" style="background:#1A7A3C">→</div><div class="sa"><div class="sq-label">${f.label}</div><div class="sq-val">${val}</div></div></div>`;
+  });
+  sumBody.appendChild(recEl);
+
+  document.getElementById("screen-form").style.display = "none";
+  document.getElementById("screen-select").style.display = "none";
+  document.getElementById("screen-summary").style.display = "block";
+  window.scrollTo(0, 0);
+}
+
+function showForm() {
+  document.getElementById("screen-summary").style.display = "none";
+  document.getElementById("screen-form").style.display = "block";
+  window.scrollTo(0, 0);
+}
+
+function goHome() {
+  document.getElementById("screen-form").style.display = "none";
+  document.getElementById("screen-summary").style.display = "none";
+  document.getElementById("screen-select").style.display = "block";
+  document.getElementById("btn-print").style.display = "none";
+  document.getElementById("btn-summary").style.display = "none";
+  document.getElementById("btn-reset").style.display = "none";
+  window.scrollTo(0, 0);
+}
+
+function resetForm() {
+  if (!confirm("Alle Eingaben zurücksetzen?")) return;
+  loadBranche(currentBranche);
+}
+
+init();
+</script>
+
+<script>
+// ─── PWA SERVICE WORKER ───────────────────────────────────────────────────────
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js").catch(e => console.log("SW:", e));
+}
+
+// ─── INSTALL PROMPT (Android) ─────────────────────────────────────────────────
+let deferredPrompt;
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById("install-btn").style.display = "inline-block";
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("install-btn");
+  if (btn) btn.addEventListener("click", () => {
+    if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; btn.style.display = "none"; }
+  });
+});
+
+// ─── LOCALSTORAGE: Daten pro Kunde speichern ──────────────────────────────────
+function saveToStorage() {
+  if (!currentBranche) return;
+  const key = "nehlsen_" + currentBranche.id;
+  const payload = { metaData, formData, ts: new Date().toISOString() };
+  try { localStorage.setItem(key, JSON.stringify(payload)); } catch(e) {}
+}
+
+function loadFromStorage(brancheId) {
+  try {
+    const raw = localStorage.getItem("nehlsen_" + brancheId);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+// ─── PDF MIT KUNDENNAME ───────────────────────────────────────────────────────
+function printPDF() {
+  const kunde = metaData.unternehmen || document.getElementById("meta_unternehmen")?.value || "";
+  const datum = metaData.datum || new Date().toLocaleDateString("de-DE");
+  const branche = currentBranche ? currentBranche.name : "";
+  // Setzt den Dokumenttitel für den PDF-Dateinamen
+  const oldTitle = document.title;
+  if (kunde) {
+    document.title = kunde.replace(/[^a-zA-Z0-9äöüÄÖÜß\s]/g, "_") + "_Abfragebogen_" + datum.replace(/\./g, "-");
+  } else {
+    document.title = "Nehlsen_" + branche + "_Abfragebogen_" + datum.replace(/\./g, "-");
+  }
+  window.print();
+  setTimeout(() => { document.title = oldTitle; }, 2000);
+}
+</script>
+
+<style>
+/* ─── INSTALL BUTTON ─────────────────────────────────────────────────────── */
+#install-btn {
+  display: none;
+  background: #F5A623;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 16px;
+  font-size: .85rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ─── VERBESSERTE DRUCKANSICHT ───────────────────────────────────────────── */
+@media print {
+  #app-header, .btn, #screen-select, #screen-summary, #install-btn, #toast { display: none !important; }
+  #screen-form { display: block !important; padding: 0; }
+  body { background: #fff !important; }
+  .section-block { box-shadow: none !important; border: 1px solid #ccc; page-break-inside: avoid; margin-bottom: 12px; }
+  .form-header { border-radius: 0 !important; margin-bottom: 12px; }
+  .meta-grid input, .q-body textarea, .q-body input[type=text] {
+    border: none !important; background: transparent !important;
+    padding: 2px 0 !important; font-size: .85rem;
+  }
+  .check-item { border: 1px solid #ccc !important; background: #fff !important; }
+  .check-item.checked { background: #e0eefc !important; border-color: #003B6E !important; }
+  .progress-bar-wrap { display: none; }
+}
+</style>
+
+</body>
+</html>
