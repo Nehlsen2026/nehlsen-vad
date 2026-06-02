@@ -271,6 +271,34 @@
     .frak-table thead th:nth-child(1) { width: 50%; }
   }
 
+
+  /* ── WETTBEWERB-DETAIL-ZEILE ─────────────────────────────────────────── */
+  .wett-detail-row { display: none; background: #fff5f5; }
+  .wett-detail-row.visible { display: table-row; }
+  .wett-detail-cell { padding: 6px 8px 10px 8px !important; }
+  .wett-detail-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  @media(max-width:600px) {
+    .wett-detail-inner { grid-template-columns: 1fr; }
+  }
+  .wett-field-wrap label {
+    font-size: .75rem; font-weight: bold; color: #C0392B;
+    display: block; margin-bottom: 3px;
+  }
+  .wett-field-wrap input {
+    width: 100%; border: 1px solid #e0a0a0; border-radius: 5px;
+    padding: 5px 7px; font-size: .8rem; background: #fff;
+    font-family: Arial, sans-serif;
+  }
+  .wett-field-wrap input:focus { outline: 2px solid #C0392B; border-color: #C0392B; }
+  .wett-hint {
+    font-size: .72rem; color: #C0392B; margin-top: 4px;
+    display: flex; align-items: center; gap: 4px;
+  }
+
 </style>
 </head>
 <body>
@@ -1024,15 +1052,26 @@ function showSummary() {
           if (!nehlsen && !wett && menge === "—" && rhythmus === "—") return; // leer überspringen
           if (nehlsen) nehlsenCount++;
           const bg = nehlsen ? "#e8f5e9" : wett ? "#fdecea" : "#fff";
+          const wett_menge = fd.wett_menge || "";
+          const wett_rhythmus = fd.wett_rhythmus || "";
+          const wett_preis = fd.wett_preis || "";
           const badge = nehlsen ? '<span style="background:#1A7A3C;color:#fff;border-radius:4px;padding:2px 6px;font-size:.72rem;">✅ Nehlsen</span>' 
                       : wett    ? '<span style="background:#C0392B;color:#fff;border-radius:4px;padding:2px 6px;font-size:.72rem;">❌ Wettbewerb</span>'
                       : '<span style="background:#E67E22;color:#fff;border-radius:4px;padding:2px 6px;font-size:.72rem;">🔶 Offen</span>';
+          const wettDetail = wett && (wett_menge || wett_rhythmus || wett_preis) ? 
+            `<tr style="background:#fff0f0;border-bottom:1px solid #eee;">
+              <td colspan="4" style="padding:4px 8px 6px 20px;font-size:.76rem;color:#C0392B;">
+                📦 Menge: <b>${wett_menge||"—"}</b> &nbsp;|&nbsp; 
+                🔄 Rhythmus: <b>${wett_rhythmus||"—"}</b> &nbsp;|&nbsp; 
+                💰 Preis: <b>${wett_preis||"—"}</b>
+              </td>
+            </tr>` : "";
           frakRows += `<tr style="background:${bg};border-bottom:1px solid #eee;">
             <td style="padding:5px 8px;font-weight:bold;font-size:.8rem;">${opt}</td>
             <td style="padding:5px 8px;text-align:center;">${badge}</td>
             <td style="padding:5px 8px;font-size:.8rem;">${menge}</td>
             <td style="padding:5px 8px;font-size:.8rem;">${rhythmus}</td>
-          </tr>`;
+          </tr>${wettDetail}`;
         });
         if (frakRows) {
           secEl.innerHTML += `
@@ -1042,8 +1081,8 @@ function showSummary() {
                 <thead><tr style="background:var(--blue);color:#fff;">
                   <th style="padding:6px 8px;text-align:left;">Fraktion</th>
                   <th style="padding:6px 8px;text-align:center;">Status</th>
-                  <th style="padding:6px 8px;text-align:left;">Menge</th>
-                  <th style="padding:6px 8px;text-align:left;">Rhythmus</th>
+                  <th style="padding:6px 8px;text-align:left;">Menge (Nehlsen)</th>
+                  <th style="padding:6px 8px;text-align:left;">Rhythmus (Nehlsen)</th>
                 </tr></thead>
                 <tbody>${frakRows}</tbody>
               </table>
@@ -1173,6 +1212,35 @@ function renderFraktionsTabelle(f, secBody, b) {
     tr.appendChild(tdMenge);
     tr.appendChild(tdRhythmus);
     tbody.appendChild(tr);
+
+    // Wettbewerb-Detail-Zeile (versteckt, wird bei Wettbewerb-Klick sichtbar)
+    const detailTr = document.createElement("tr");
+    detailTr.id = "wett_detail_" + rowId;
+    detailTr.className = "wett-detail-row";
+    const detailTd = document.createElement("td");
+    detailTd.colSpan = 5;
+    detailTd.className = "wett-detail-cell";
+    detailTd.innerHTML = `
+      <div class="wett-hint">❌ Wettbewerb – bitte Details erfassen:</div>
+      <div class="wett-detail-inner" style="margin-top:6px;">
+        <div class="wett-field-wrap">
+          <label>Menge / Behälter (Wettbewerb)</label>
+          <input type="text" id="wett_menge_${rowId}" placeholder="z. B. 1,1m³ Container"
+            oninput="saveFrak('${rowId}','wett_menge',this.value)">
+        </div>
+        <div class="wett-field-wrap">
+          <label>Abholrhythmus (Wettbewerb)</label>
+          <input type="text" id="wett_rhythmus_${rowId}" placeholder="z. B. 1x pro Woche"
+            oninput="saveFrak('${rowId}','wett_rhythmus',this.value)">
+        </div>
+        <div class="wett-field-wrap">
+          <label>💰 Wettbewerbspreis (€/t oder €/Leerung)</label>
+          <input type="text" id="wett_preis_${rowId}" placeholder="z. B. 120 €/t"
+            oninput="saveFrak('${rowId}','wett_preis',this.value)">
+        </div>
+      </div>`;
+    detailTr.appendChild(detailTd);
+    tbody.appendChild(detailTr);
   });
 
   table.appendChild(tbody);
@@ -1183,21 +1251,47 @@ function renderFraktionsTabelle(f, secBody, b) {
 function togFrak(btn) {
   const row = btn.dataset.row;
   const col = btn.dataset.col;
-  const val = btn.dataset.val;
-  const isActive = btn.classList.contains("active-ja") || btn.classList.contains("active-nein") || btn.classList.contains("active-pot");
+  const isActive = btn.classList.contains("active-ja") || btn.classList.contains("active-nein");
 
-  // Toggle: wenn schon aktiv → deaktivieren
   if (isActive) {
-    btn.classList.remove("active-ja","active-nein","active-pot");
+    btn.classList.remove("active-ja","active-nein");
     saveFrak(row, col, "");
-    // Zeilenfarbe zurücksetzen
-    updateRowColor(row);
   } else {
-    btn.classList.add(col === "nehlsen" ? "active-ja" : "active-nein");
-    saveFrak(row, col, "ja");
-    updateRowColor(row);
+    // Wenn Nehlsen aktiviert wird → Wettbewerb deaktivieren und umgekehrt
+    if (col === "nehlsen") {
+      const wettBtn = document.querySelector(`.tog-btn[data-row="${row}"][data-col="wett"]`);
+      if (wettBtn) { wettBtn.classList.remove("active-ja","active-nein"); saveFrak(row,"wett",""); }
+      hideWettDetail(row);
+      btn.classList.add("active-ja");
+      saveFrak(row, col, "ja");
+    } else {
+      // Wettbewerb aktiviert → Nehlsen deaktivieren, Detail-Zeile zeigen
+      const nehlsenBtn = document.querySelector(`.tog-btn[data-row="${row}"][data-col="nehlsen"]`);
+      if (nehlsenBtn) { nehlsenBtn.classList.remove("active-ja","active-nein"); saveFrak(row,"nehlsen",""); }
+      btn.classList.add("active-nein");
+      saveFrak(row, col, "ja");
+      showWettDetail(row);
+    }
   }
+  updateRowColor(row);
   autoSave();
+}
+
+function showWettDetail(rowId) {
+  const detailRow = document.getElementById("wett_detail_" + rowId);
+  if (detailRow) detailRow.classList.add("visible");
+}
+
+function hideWettDetail(rowId) {
+  const detailRow = document.getElementById("wett_detail_" + rowId);
+  if (detailRow) detailRow.classList.remove("visible");
+  // Werte löschen
+  ["wett_menge","wett_rhythmus","wett_preis"].forEach(k => {
+    const inp = document.getElementById(k + "_" + rowId);
+    if (inp) inp.value = "";
+    if (!formData["frak_" + rowId]) formData["frak_" + rowId] = {};
+    formData["frak_" + rowId][k] = "";
+  });
 }
 
 function updateRowColor(rowId) {
@@ -1346,6 +1440,34 @@ function printPDF() {
     .frak-table td:nth-child(4),
     .frak-table td:nth-child(5) { display: none; }
     .frak-table thead th:nth-child(1) { width: 50%; }
+  }
+
+
+  /* ── WETTBEWERB-DETAIL-ZEILE ─────────────────────────────────────────── */
+  .wett-detail-row { display: none; background: #fff5f5; }
+  .wett-detail-row.visible { display: table-row; }
+  .wett-detail-cell { padding: 6px 8px 10px 8px !important; }
+  .wett-detail-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  @media(max-width:600px) {
+    .wett-detail-inner { grid-template-columns: 1fr; }
+  }
+  .wett-field-wrap label {
+    font-size: .75rem; font-weight: bold; color: #C0392B;
+    display: block; margin-bottom: 3px;
+  }
+  .wett-field-wrap input {
+    width: 100%; border: 1px solid #e0a0a0; border-radius: 5px;
+    padding: 5px 7px; font-size: .8rem; background: #fff;
+    font-family: Arial, sans-serif;
+  }
+  .wett-field-wrap input:focus { outline: 2px solid #C0392B; border-color: #C0392B; }
+  .wett-hint {
+    font-size: .72rem; color: #C0392B; margin-top: 4px;
+    display: flex; align-items: center; gap: 4px;
   }
 
 </style>
