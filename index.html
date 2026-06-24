@@ -299,6 +299,79 @@
     display: flex; align-items: center; gap: 4px;
   }
 
+
+  /* ── KUNDEN-IMPORT & SUCHE ─────────────────────────────────────────────── */
+  #screen-kunden { display: none; padding: 24px; max-width: 900px; margin: 0 auto; }
+  .kunden-header {
+    background: var(--blue); color: #fff; border-radius: 12px;
+    padding: 22px 28px; margin-bottom: 20px;
+  }
+  .kunden-header h2 { font-size: 1.4rem; margin-bottom: 4px; }
+  .kunden-header p  { color: var(--light); font-size: .9rem; }
+
+  .kunden-toolbar {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    background: #fff; border-radius: 10px; padding: 16px 20px;
+    margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,.07);
+    align-items: center;
+  }
+  .kunden-search {
+    flex: 1; min-width: 200px;
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 9px 14px; font-size: .9rem; background: var(--ans);
+  }
+  .kunden-search:focus { outline: 2px solid var(--mid); border-color: var(--mid); }
+
+  .kunden-list { background: #fff; border-radius: 10px; box-shadow: 0 1px 6px rgba(0,0,0,.07); overflow: hidden; }
+  .kunden-list-header {
+    display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 120px;
+    background: var(--blue); color: #fff;
+    padding: 10px 16px; font-size: .8rem; font-weight: bold;
+  }
+  .kunden-row {
+    display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 120px;
+    padding: 11px 16px; border-bottom: 1px solid #eee;
+    align-items: center; font-size: .85rem;
+    transition: background .12s; cursor: pointer;
+  }
+  .kunden-row:hover { background: #f0f7ff; }
+  .kunden-row.hat-bogen { background: #f0fff4; }
+  .kunden-row.hat-bogen:hover { background: #e0f5e9; }
+  .kunden-badge {
+    font-size: .72rem; font-weight: bold; border-radius: 4px;
+    padding: 2px 7px; display: inline-block;
+  }
+  .badge-offen   { background: #FFF3CD; color: #856404; }
+  .badge-erfasst { background: #D4EDDA; color: #155724; }
+
+  .import-box {
+    background: #fff; border-radius: 10px; padding: 20px;
+    margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,.07);
+    border: 2px dashed var(--border);
+  }
+  .import-box h3 { color: var(--blue); margin-bottom: 10px; font-size: 1rem; }
+  .import-box p  { font-size: .85rem; color: #555; margin-bottom: 12px; }
+  #csv-file-input { display: none; }
+  .import-drop {
+    border: 2px dashed var(--mid); border-radius: 8px;
+    padding: 24px; text-align: center; cursor: pointer;
+    color: var(--mid); font-weight: bold; font-size: .9rem;
+    transition: background .15s;
+  }
+  .import-drop:hover { background: var(--light); }
+
+  .kunden-empty { text-align: center; padding: 40px; color: #aaa; font-size: .95rem; }
+
+  @media(max-width:600px) {
+    .kunden-list-header, .kunden-row {
+      grid-template-columns: 2fr 1fr 100px;
+    }
+    .kunden-list-header > *:nth-child(2),
+    .kunden-list-header > *:nth-child(4),
+    .kunden-row > *:nth-child(2),
+    .kunden-row > *:nth-child(4) { display: none; }
+  }
+
 </style>
 </head>
 <body>
@@ -307,10 +380,54 @@
   <div class="logo">NEHLSEN MV <span>| Abfragebögen Außendienst</span></div>
   <div id="header-actions">
     <button id="install-btn">📲 App installieren</button>
+    <button class="btn btn-outline btn-sm" onclick="showKunden()">👥 Kunden</button>
     <button class="btn btn-outline btn-sm" onclick="goHome()">🏠 Übersicht</button>
     <button class="btn btn-light btn-sm" id="btn-print" style="display:none" onclick="printPDF()">🖨️ PDF speichern</button>
     <button class="btn btn-success btn-sm" id="btn-summary" style="display:none" onclick="showSummary()">📋 Zusammenfassung</button>
     <button class="btn btn-danger btn-sm" id="btn-reset" style="display:none" onclick="resetForm()">🗑️ Zurücksetzen</button>
+  </div>
+</div>
+
+
+<!-- SCREEN 0: Kunden -->
+<div id="screen-kunden">
+  <div class="kunden-header">
+    <h2>👥 Kundenliste</h2>
+    <p>Wählen Sie einen Kunden aus oder importieren Sie Ihre Kundenliste aus Excel/CSV.</p>
+  </div>
+
+  <div class="import-box">
+    <h3>📂 Kundenliste importieren (Excel / CSV)</h3>
+    <p>Exportieren Sie Ihre Kundenliste aus Excel als <b>CSV-Datei</b> mit den Spalten:<br>
+    <code style="background:#f5f5f5;padding:2px 6px;border-radius:4px;font-size:.82rem;">Kundenname;Debitor;Ansprechpartner;Adresse;Telefon;Branche</code></p>
+    <div class="import-drop" onclick="document.getElementById('csv-file-input').click()" 
+         ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+      📄 CSV-Datei hier hineinziehen oder klicken zum Auswählen
+    </div>
+    <input type="file" id="csv-file-input" accept=".csv,.txt" onchange="importCSV(this)">
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-primary btn-sm" onclick="downloadMusterCSV()">⬇️ Muster-CSV herunterladen</button>
+      <button class="btn btn-danger btn-sm" onclick="clearKunden()">🗑️ Liste leeren</button>
+    </div>
+  </div>
+
+  <div style="background:#fff;border-radius:10px;padding:16px 20px;margin-bottom:16px;box-shadow:0 1px 6px rgba(0,0,0,.07);">
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <input class="kunden-search" id="kunden-search" placeholder="🔍 Name, Debitor-Nr., Ort, Branche suchen…" oninput="renderKundenList()">
+      <button class="btn btn-success btn-sm" onclick="neuerKunde()">➕ Neuer Kunde</button>
+      <span id="kunden-count" style="font-size:.82rem;color:#777;"></span>
+    </div>
+  </div>
+
+  <div class="kunden-list">
+    <div class="kunden-list-header">
+      <span>Kundenname</span>
+      <span>Debitor-Nr.</span>
+      <span>Branche</span>
+      <span>Ort</span>
+      <span>Status</span>
+    </div>
+    <div id="kunden-list-body"></div>
   </div>
 </div>
 
@@ -796,6 +913,7 @@ let metaData = {};   // { unternehmen, ansprechpartner, adresse, telefon, datum,
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 function init() {
+  loadKundenFromStorage();
   const grid = document.getElementById("branch-grid");
   BRANCHEN.forEach(b => {
     const card = document.createElement("div");
@@ -807,10 +925,13 @@ function init() {
 }
 
 // ─── LOAD BRANCHE ─────────────────────────────────────────────────────────────
-function loadBranche(b) {
+function loadBranche(b, fromKunde) {
   currentBranche = b;
   formData = {};
   metaData = {};
+
+  // Wenn nicht von Kunde aufgerufen, Daten zurücksetzen
+  if (!fromKunde) { formData = {}; metaData = {}; }
 
   // Header
   document.getElementById("fh-icon").textContent = b.icon;
@@ -828,10 +949,11 @@ function loadBranche(b) {
   metaDiv.className = "meta-grid";
   const metaFields = [
     { id:"unternehmen",    label:"Unternehmen" },
+    { id:"debitor",        label:"Debitor-Nr." },
     { id:"ansprechpartner",label:"Ansprechpartner" },
     { id:"adresse",        label:"Adresse" },
     { id:"telefon",        label:"Telefon / E-Mail" },
-    { id:"datum",          label:"Datum", value: new Date().toLocaleDateString("de-DE") },
+    { id:"datum",          label:"Datum", value: metaData.datum || new Date().toLocaleDateString("de-DE") },
     { id:"berater",        label:"Nehlsen-Berater/in" },
   ];
   metaFields.forEach(f => {
@@ -1001,6 +1123,7 @@ let saveTimer;
 function autoSave() {
   clearTimeout(saveTimer);
   saveToStorage();
+    saveBogenFuerKunde();
     saveTimer = setTimeout(() => {
     const toast = document.getElementById("toast");
     toast.style.display = "block";
@@ -1022,8 +1145,8 @@ function showSummary() {
   const metaSec = document.createElement("div");
   metaSec.className = "summary-section";
   metaSec.innerHTML = `<h3>📋 Stammdaten</h3>`;
-  const metaFields = ["unternehmen","ansprechpartner","adresse","telefon","datum","berater"];
-  const metaLabels = ["Unternehmen","Ansprechpartner","Adresse","Telefon / E-Mail","Datum","Berater"];
+  const metaFields = ["unternehmen","debitor","ansprechpartner","adresse","telefon","datum","berater"];
+  const metaLabels = ["Unternehmen","Debitor-Nr.","Ansprechpartner","Adresse","Telefon / E-Mail","Datum","Berater"];
   metaFields.forEach((f, i) => {
     const v = document.getElementById(`meta_${f}`)?.value || metaData[f] || "—";
     metaSec.innerHTML += `<div class="summary-row"><div class="sq-label" style="min-width:160px;font-size:.85rem;color:#555;">${metaLabels[i]}:</div><div class="sq-val">${v || "—"}</div></div>`;
@@ -1128,10 +1251,12 @@ function showForm() {
   window.scrollTo(0, 0);
 }
 
-function goHome() {
+function goHome(keepMeta) {
+  if (!keepMeta) { currentBranche = null; }
+  document.getElementById("screen-kunden").style.display = "none";
+  document.getElementById("screen-select").style.display = "block";
   document.getElementById("screen-form").style.display = "none";
   document.getElementById("screen-summary").style.display = "none";
-  document.getElementById("screen-select").style.display = "block";
   document.getElementById("btn-print").style.display = "none";
   document.getElementById("btn-summary").style.display = "none";
   document.getElementById("btn-reset").style.display = "none";
@@ -1144,6 +1269,18 @@ function resetForm() {
 }
 
 init();
+
+// ─── SAFE AUTOSTART ──────────────────────────────────────────────────────────
+let __appStarted = false;
+function startAppOnce() {
+  if (__appStarted) return;
+  __appStarted = true;
+  try { init(); } catch(e) { console.error("Init failed:", e); }
+}
+
+document.addEventListener("DOMContentLoaded", startAppOnce);
+window.addEventListener("pageshow", startAppOnce);
+
 </script>
 
 <script>
@@ -1313,6 +1450,226 @@ function saveFrak(rowId, col, val) {
   autoSave();
 }
 
+
+// ─── KUNDEN-VERWALTUNG ────────────────────────────────────────────────────────
+let kundenListe = [];
+
+function loadKundenFromStorage() {
+  try {
+    const raw = localStorage.getItem("nehlsen_kunden");
+    if (raw) kundenListe = JSON.parse(raw);
+  } catch(e) { kundenListe = []; }
+}
+
+function saveKundenToStorage() {
+  try { localStorage.setItem("nehlsen_kunden", JSON.stringify(kundenListe)); } catch(e) {}
+}
+
+function showKunden() {
+  loadKundenFromStorage();
+  document.getElementById("screen-select").style.display = "none";
+  document.getElementById("screen-form").style.display = "none";
+  document.getElementById("screen-summary").style.display = "none";
+  document.getElementById("screen-kunden").style.display = "block";
+  document.getElementById("btn-print").style.display = "none";
+  document.getElementById("btn-summary").style.display = "none";
+  document.getElementById("btn-reset").style.display = "none";
+  renderKundenList();
+}
+
+function renderKundenList() {
+  const q = (document.getElementById("kunden-search")?.value || "").toLowerCase();
+  const body = document.getElementById("kunden-list-body");
+  const filtered = kundenListe.filter(k =>
+    (k.name||"").toLowerCase().includes(q) ||
+    (k.debitor||"").toLowerCase().includes(q) ||
+    (k.ansprechpartner||"").toLowerCase().includes(q) ||
+    (k.ort||"").toLowerCase().includes(q) ||
+    (k.branche||"").toLowerCase().includes(q)
+  );
+  document.getElementById("kunden-count").textContent = `${filtered.length} von ${kundenListe.length} Kunden`;
+
+  if (filtered.length === 0) {
+    body.innerHTML = `<div class="kunden-empty">
+      ${kundenListe.length === 0 
+        ? "📂 Noch keine Kunden vorhanden.<br>CSV importieren oder neuen Kunden anlegen."
+        : "🔍 Keine Kunden gefunden."}
+    </div>`;
+    return;
+  }
+
+  body.innerHTML = filtered.map((k, i) => {
+    const idx = kundenListe.indexOf(k);
+    const hatBogen = !!localStorage.getItem("nehlsen_bogen_" + idx);
+    const badge = hatBogen 
+      ? '<span class="kunden-badge badge-erfasst">✅ Bogen erfasst</span>'
+      : '<span class="kunden-badge badge-offen">⬜ Offen</span>';
+    const ort = (k.adresse||"").split(",").pop()?.trim() || "—";
+    return `<div class="kunden-row ${hatBogen?'hat-bogen':''}" onclick="kundeAuswaehlen(${idx})">
+      <span style="font-weight:bold;color:var(--blue);">${k.name||"—"}</span>
+      <span style="color:#555;font-family:monospace;font-size:.82rem;">${k.debitor ? "<b style='color:var(--blue)'>D040</b>" + k.debitor.replace(/^D040/i,"") : "—"}</span>
+      <span style="color:#555;">${k.branche||"—"}</span>
+      <span style="color:#555;">${ort}</span>
+      <span>${badge}</span>
+    </div>`;
+  }).join("");
+}
+
+function kundeAuswaehlen(idx) {
+  const k = kundenListe[idx];
+  if (!k) return;
+  // Branche automatisch ermitteln
+  const brancheMap = {
+    "industrie": "industrie", "produktion": "industrie",
+    "bau": "bau", "abbruch": "bau", "tiefbau": "bau",
+    "werkstatt": "werkstatt", "kfz": "werkstatt", "auto": "werkstatt",
+    "landwirt": "landwirtschaft", "hof": "landwirtschaft", "agrar": "landwirtschaft",
+    "handel": "handel", "logistik": "handel", "lager": "handel",
+    "gastro": "gastro", "restaurant": "gastro", "hotel": "gastro", "lebensmittel": "gastro",
+    "gesundheit": "gesundheit", "klinik": "gesundheit", "praxis": "gesundheit", "pflege": "gesundheit",
+    "handwerk": "handwerk", "sanitär": "handwerk", "elektro": "handwerk", "maler": "handwerk",
+    "dienstleistung": "dienstleistung", "reinigung": "dienstleistung", "beratung": "dienstleistung",
+    "büro": "buero", "verwaltung": "buero", "behörde": "buero",
+  };
+  let matchedBranche = null;
+  const brancheText = (k.branche||"").toLowerCase();
+  for (const [key, val] of Object.entries(brancheMap)) {
+    if (brancheText.includes(key)) { matchedBranche = val; break; }
+  }
+
+  // Gespeicherten Bogen laden falls vorhanden
+  try {
+    const saved = localStorage.getItem("nehlsen_bogen_" + idx);
+    if (saved) {
+      const payload = JSON.parse(saved);
+      formData = payload.formData || {};
+      metaData = payload.metaData || {};
+    } else {
+      formData = {}; metaData = {};
+    }
+  } catch(e) { formData = {}; metaData = {}; }
+
+  // Stammdaten vorbelegen
+  metaData._kundeIdx = idx;
+  metaData.unternehmen = metaData.unternehmen || k.name || "";
+  metaData.debitor = metaData.debitor || k.debitor || "";
+  metaData.ansprechpartner = metaData.ansprechpartner || k.ansprechpartner || "";
+  metaData.adresse = metaData.adresse || k.adresse || "";
+  metaData.telefon = metaData.telefon || k.telefon || "";
+  metaData.datum = metaData.datum || new Date().toLocaleDateString("de-DE");
+
+  if (matchedBranche) {
+    const b = BRANCHEN.find(x => x.id === matchedBranche);
+    if (b) { loadBranche(b, true); return; }
+  }
+  // Keine Branche erkannt → Branchenauswahl zeigen mit vorausgefüllten Stammdaten
+  goHome(true);
+}
+
+function neuerKunde() {
+  const name = prompt("Kundenname:");
+  if (!name) return;
+  let debitor = prompt("Debitor-Nummer (optional, z. B. D040123456):") || "";
+  if (debitor && !debitor.toUpperCase().startsWith("D040")) debitor = "D040" + debitor;
+  const ansprechpartner = prompt("Ansprechpartner (optional):") || "";
+  const adresse = prompt("Adresse (optional):") || "";
+  const branche = prompt("Branche (optional, z. B. Handwerk):") || "";
+  kundenListe.push({ name, debitor, ansprechpartner, adresse, branche });
+  saveKundenToStorage();
+  renderKundenList();
+}
+
+// ─── CSV IMPORT ───────────────────────────────────────────────────────────────
+function importCSV(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    parseCSV(e.target.result);
+    input.value = "";
+  };
+  reader.readAsText(file, "UTF-8");
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => parseCSV(ev.target.result);
+  reader.readAsText(file, "UTF-8");
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) { alert("CSV hat keine Datenzeilen."); return; }
+  
+  // Trennzeichen erkennen (Semikolon oder Komma)
+  const sep = lines[0].includes(";") ? ";" : ",";
+  const header = lines[0].split(sep).map(h => h.trim().toLowerCase().replace(/[^a-z]/g,""));
+  
+  // Spalten-Mapping
+  const colIdx = {
+    name:            header.findIndex(h => ["kundenname","name","firma","unternehmen","kunde"].includes(h)),
+    debitor:         header.findIndex(h => ["debitor","debitorennummer","debitorenr","kundennummer","kdnr","kd","debitornr","debitorennr"].includes(h)),
+    ansprechpartner: header.findIndex(h => ["ansprechpartner","kontakt","ap","ansprechp"].includes(h)),
+    adresse:         header.findIndex(h => ["adresse","address","ort","strasse"].includes(h)),
+    telefon:         header.findIndex(h => ["telefon","tel","phone","email","mail"].includes(h)),
+    branche:         header.findIndex(h => ["branche","branchenname","typ","kategorie"].includes(h)),
+  };
+
+  let imported = 0;
+  let skipped = 0;
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(sep);
+    if (cols.length < 2) continue;
+    const name = colIdx.name >= 0 ? (cols[colIdx.name]||"").trim() : cols[0]?.trim();
+    if (!name) { skipped++; continue; }
+    // Duplikat prüfen
+    if (kundenListe.some(k => k.name.toLowerCase() === name.toLowerCase())) { skipped++; continue; }
+    kundenListe.push({
+      name,
+      debitor:         (() => { let d = colIdx.debitor >= 0 ? (cols[colIdx.debitor]||"").trim() : ""; if (d && !d.toUpperCase().startsWith("D040")) d = "D040" + d; return d; })(),
+      ansprechpartner: colIdx.ansprechpartner >= 0 ? (cols[colIdx.ansprechpartner]||"").trim() : "",
+      adresse:         colIdx.adresse >= 0 ? (cols[colIdx.adresse]||"").trim() : "",
+      telefon:         colIdx.telefon >= 0 ? (cols[colIdx.telefon]||"").trim() : "",
+      branche:         colIdx.branche >= 0 ? (cols[colIdx.branche]||"").trim() : "",
+    });
+    imported++;
+  }
+  saveKundenToStorage();
+  renderKundenList();
+  alert(`✅ ${imported} Kunden importiert${skipped > 0 ? ", " + skipped + " übersprungen (Duplikate/leer)" : ""}.`);
+}
+
+function downloadMusterCSV() {
+  const csv = "Kundenname;Debitor;Ansprechpartner;Adresse;Telefon;Branche\n" +
+    "Müller GmbH;D040123456;Max Müller;Musterstraße 1, 19055 Schwerin;0385-123456;Industrie\n" +
+    "Bau AG;D040234567;Petra Bauer;Bauweg 5, 18057 Rostock;0381-654321;Bau\n" +
+    "Landgut Schmidt;D040345678;Hans Schmidt;Dorfstraße 10, 17033 Neubrandenburg;0395-111222;Landwirtschaft\n";
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "Nehlsen_Kunden_Muster.csv";
+  a.click();
+}
+
+function clearKunden() {
+  if (!confirm("Alle Kunden löschen? (Ausgefüllte Bögen bleiben erhalten)")) return;
+  kundenListe = [];
+  saveKundenToStorage();
+  renderKundenList();
+}
+
+// Bogen-Speicherung pro Kunde erweitern
+function saveBogenFuerKunde() {
+  const idx = metaData._kundeIdx;
+  if (idx === undefined || idx === null) return;
+  try {
+    localStorage.setItem("nehlsen_bogen_" + idx, JSON.stringify({ formData, metaData, ts: new Date().toISOString() }));
+  } catch(e) {}
+}
+
 // ─── PWA SERVICE WORKER ───────────────────────────────────────────────────────
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js").catch(e => console.log("SW:", e));
@@ -1468,6 +1825,79 @@ function printPDF() {
   .wett-hint {
     font-size: .72rem; color: #C0392B; margin-top: 4px;
     display: flex; align-items: center; gap: 4px;
+  }
+
+
+  /* ── KUNDEN-IMPORT & SUCHE ─────────────────────────────────────────────── */
+  #screen-kunden { display: none; padding: 24px; max-width: 900px; margin: 0 auto; }
+  .kunden-header {
+    background: var(--blue); color: #fff; border-radius: 12px;
+    padding: 22px 28px; margin-bottom: 20px;
+  }
+  .kunden-header h2 { font-size: 1.4rem; margin-bottom: 4px; }
+  .kunden-header p  { color: var(--light); font-size: .9rem; }
+
+  .kunden-toolbar {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    background: #fff; border-radius: 10px; padding: 16px 20px;
+    margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,.07);
+    align-items: center;
+  }
+  .kunden-search {
+    flex: 1; min-width: 200px;
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 9px 14px; font-size: .9rem; background: var(--ans);
+  }
+  .kunden-search:focus { outline: 2px solid var(--mid); border-color: var(--mid); }
+
+  .kunden-list { background: #fff; border-radius: 10px; box-shadow: 0 1px 6px rgba(0,0,0,.07); overflow: hidden; }
+  .kunden-list-header {
+    display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 120px;
+    background: var(--blue); color: #fff;
+    padding: 10px 16px; font-size: .8rem; font-weight: bold;
+  }
+  .kunden-row {
+    display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 120px;
+    padding: 11px 16px; border-bottom: 1px solid #eee;
+    align-items: center; font-size: .85rem;
+    transition: background .12s; cursor: pointer;
+  }
+  .kunden-row:hover { background: #f0f7ff; }
+  .kunden-row.hat-bogen { background: #f0fff4; }
+  .kunden-row.hat-bogen:hover { background: #e0f5e9; }
+  .kunden-badge {
+    font-size: .72rem; font-weight: bold; border-radius: 4px;
+    padding: 2px 7px; display: inline-block;
+  }
+  .badge-offen   { background: #FFF3CD; color: #856404; }
+  .badge-erfasst { background: #D4EDDA; color: #155724; }
+
+  .import-box {
+    background: #fff; border-radius: 10px; padding: 20px;
+    margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,.07);
+    border: 2px dashed var(--border);
+  }
+  .import-box h3 { color: var(--blue); margin-bottom: 10px; font-size: 1rem; }
+  .import-box p  { font-size: .85rem; color: #555; margin-bottom: 12px; }
+  #csv-file-input { display: none; }
+  .import-drop {
+    border: 2px dashed var(--mid); border-radius: 8px;
+    padding: 24px; text-align: center; cursor: pointer;
+    color: var(--mid); font-weight: bold; font-size: .9rem;
+    transition: background .15s;
+  }
+  .import-drop:hover { background: var(--light); }
+
+  .kunden-empty { text-align: center; padding: 40px; color: #aaa; font-size: .95rem; }
+
+  @media(max-width:600px) {
+    .kunden-list-header, .kunden-row {
+      grid-template-columns: 2fr 1fr 100px;
+    }
+    .kunden-list-header > *:nth-child(2),
+    .kunden-list-header > *:nth-child(4),
+    .kunden-row > *:nth-child(2),
+    .kunden-row > *:nth-child(4) { display: none; }
   }
 
 </style>
