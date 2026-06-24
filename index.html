@@ -906,6 +906,35 @@ const BRANCHEN = [
   },
 ];
 
+
+// ─── SAFE STORAGE (iOS/Privacy robust) ───────────────────────────────────────
+const SafeStorage = (() => {
+  let mem = {};
+  function ok(store) {
+    try {
+      const k = "__t" + Date.now();
+      store.setItem(k, "1");
+      store.removeItem(k);
+      return true;
+    } catch(e) { return false; }
+  }
+  const hasLocal = (() => { try { return ok(window.localStorage); } catch(e){ return false; } })();
+  const hasSession = (() => { try { return ok(window.sessionStorage); } catch(e){ return false; } })();
+  const store = hasLocal ? window.localStorage : (hasSession ? window.sessionStorage : null);
+  return {
+    mode: hasLocal ? "localStorage" : (hasSession ? "sessionStorage" : "memory"),
+    getItem: (k) => {
+      try { return store ? store.getItem(k) : (mem[k] ?? null); } catch(e) { return mem[k] ?? null; }
+    },
+    setItem: (k, v) => {
+      try { if (store) store.setItem(k, v); else mem[k] = String(v); } catch(e) { mem[k] = String(v); }
+    },
+    removeItem: (k) => {
+      try { if (store) store.removeItem(k); else delete mem[k]; } catch(e) { delete mem[k]; }
+    }
+  };
+})();
+
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let currentBranche = null;
 let formData = {};   // { fieldId: value }
@@ -1456,13 +1485,13 @@ let kundenListe = [];
 
 function loadKundenFromStorage() {
   try {
-    const raw = localStorage.getItem("nehlsen_kunden");
+    const raw = SafeStorage.getItem("nehlsen_kunden");
     if (raw) kundenListe = JSON.parse(raw);
   } catch(e) { kundenListe = []; }
 }
 
 function saveKundenToStorage() {
-  try { localStorage.setItem("nehlsen_kunden", JSON.stringify(kundenListe)); } catch(e) {}
+  try { SafeStorage.setItem("nehlsen_kunden", JSON.stringify(kundenListe)); } catch(e) {}
 }
 
 function showKunden() {
@@ -1500,7 +1529,7 @@ function renderKundenList() {
 
   body.innerHTML = filtered.map((k, i) => {
     const idx = kundenListe.indexOf(k);
-    const hatBogen = !!localStorage.getItem("nehlsen_bogen_" + idx);
+    const hatBogen = !!SafeStorage.getItem("nehlsen_bogen_" + idx);
     const badge = hatBogen 
       ? '<span class="kunden-badge badge-erfasst">✅ Bogen erfasst</span>'
       : '<span class="kunden-badge badge-offen">⬜ Offen</span>';
@@ -1539,7 +1568,7 @@ function kundeAuswaehlen(idx) {
 
   // Gespeicherten Bogen laden falls vorhanden
   try {
-    const saved = localStorage.getItem("nehlsen_bogen_" + idx);
+    const saved = SafeStorage.getItem("nehlsen_bogen_" + idx);
     if (saved) {
       const payload = JSON.parse(saved);
       formData = payload.formData || {};
@@ -1666,10 +1695,14 @@ function saveBogenFuerKunde() {
   const idx = metaData._kundeIdx;
   if (idx === undefined || idx === null) return;
   try {
-    localStorage.setItem("nehlsen_bogen_" + idx, JSON.stringify({ formData, metaData, ts: new Date().toISOString() }));
+    SafeStorage.setItem("nehlsen_bogen_" + idx, JSON.stringify({ formData, metaData, ts: new Date().toISOString() }));
   } catch(e) {}
 }
 
+// ─── PWA SERVICE WORKER ───────────────────────────────────────────────────────
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js").catch(e => console.log("SW:", e));
+}
 
 // ─── INSTALL PROMPT (Android) ─────────────────────────────────────────────────
 let deferredPrompt;
@@ -1690,12 +1723,12 @@ function saveToStorage() {
   if (!currentBranche) return;
   const key = "nehlsen_" + currentBranche.id;
   const payload = { metaData, formData, ts: new Date().toISOString() };
-  try { localStorage.setItem(key, JSON.stringify(payload)); } catch(e) {}
+  try { SafeStorage.setItem(key, JSON.stringify(payload)); } catch(e) {}
 }
 
 function loadFromStorage(brancheId) {
   try {
-    const raw = localStorage.getItem("nehlsen_" + brancheId);
+    const raw = SafeStorage.getItem("nehlsen_" + brancheId);
     return raw ? JSON.parse(raw) : null;
   } catch(e) { return null; }
 }
