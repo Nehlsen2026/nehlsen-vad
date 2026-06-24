@@ -1269,18 +1269,6 @@ function resetForm() {
 }
 
 init();
-
-// ─── SAFE AUTOSTART ──────────────────────────────────────────────────────────
-let __appStarted = false;
-function startAppOnce() {
-  if (__appStarted) return;
-  __appStarted = true;
-  try { init(); } catch(e) { console.error("Init failed:", e); }
-}
-
-document.addEventListener("DOMContentLoaded", startAppOnce);
-window.addEventListener("pageshow", startAppOnce);
-
 </script>
 
 <script>
