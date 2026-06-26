@@ -222,156 +222,6 @@
     #screen-form { display: block !important; padding: 0; }
     .section-block { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
   }
-
-  /* ── FRAKTIONS-TABELLE ─────────────────────────────────────────────────── */
-  .frak-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: .82rem; }
-  .frak-table thead tr { background: var(--blue); color: #fff; }
-  .frak-table thead th { padding: 8px 10px; text-align: left; font-weight: bold; font-size: .8rem; }
-  .frak-table thead th:nth-child(1) { width: 26%; }
-  .frak-table thead th:nth-child(2) { width: 14%; text-align:center; }
-  .frak-table thead th:nth-child(3) { width: 14%; text-align:center; }
-  .frak-table thead th:nth-child(4) { width: 23%; }
-  .frak-table thead th:nth-child(5) { width: 23%; }
-  .frak-table tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
-  .frak-table tbody tr:hover { background: #f0f7ff; }
-  .frak-table tbody tr.row-nehlsen { background: #e8f5e9; }
-  .frak-table tbody tr.row-nehlsen:hover { background: #d4edda; }
-  .frak-table td { padding: 7px 8px; vertical-align: middle; }
-  .frak-table td:nth-child(2), .frak-table td:nth-child(3) { text-align: center; }
-
-  /* Toggle-Buttons statt Checkboxen */
-  .tog-wrap { display: flex; justify-content: center; gap: 4px; }
-  .tog-btn {
-    border: 2px solid var(--border); border-radius: 5px;
-    padding: 4px 8px; font-size: .75rem; font-weight: bold;
-    cursor: pointer; background: #fff; color: #888;
-    transition: background .15s, color .15s, border-color .15s;
-    white-space: nowrap;
-  }
-  .tog-btn.active-ja  { background: #1A7A3C; color: #fff; border-color: #1A7A3C; }
-  .tog-btn.active-nein{ background: #C0392B; color: #fff; border-color: #C0392B; }
-  .tog-btn.active-pot { background: #E67E22; color: #fff; border-color: #E67E22; }
-
-  .frak-input {
-    width: 100%; border: 1px solid var(--border); border-radius: 5px;
-    padding: 5px 7px; font-size: .8rem; background: var(--ans);
-    font-family: Arial, sans-serif;
-  }
-  .frak-input:focus { outline: 2px solid var(--mid); border-color: var(--mid); }
-
-  .frak-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; font-size: .78rem; }
-  .frak-legend span { display: flex; align-items: center; gap: 4px; }
-  .leg-dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
-
-  @media(max-width: 600px) {
-    .frak-table thead th:nth-child(4),
-    .frak-table thead th:nth-child(5),
-    .frak-table td:nth-child(4),
-    .frak-table td:nth-child(5) { display: none; }
-    .frak-table thead th:nth-child(1) { width: 50%; }
-  }
-
-
-  /* ── WETTBEWERB-DETAIL-ZEILE ─────────────────────────────────────────── */
-  .wett-detail-row { display: none; background: #fff5f5; }
-  .wett-detail-row.visible { display: table-row; }
-  .wett-detail-cell { padding: 6px 8px 10px 8px !important; }
-  .wett-detail-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-  }
-  @media(max-width:600px) {
-    .wett-detail-inner { grid-template-columns: 1fr; }
-  }
-  .wett-field-wrap label {
-    font-size: .75rem; font-weight: bold; color: #C0392B;
-    display: block; margin-bottom: 3px;
-  }
-  .wett-field-wrap input {
-    width: 100%; border: 1px solid #e0a0a0; border-radius: 5px;
-    padding: 5px 7px; font-size: .8rem; background: #fff;
-    font-family: Arial, sans-serif;
-  }
-  .wett-field-wrap input:focus { outline: 2px solid #C0392B; border-color: #C0392B; }
-  .wett-hint {
-    font-size: .72rem; color: #C0392B; margin-top: 4px;
-    display: flex; align-items: center; gap: 4px;
-  }
-
-
-  /* ── KUNDEN-IMPORT & SUCHE ─────────────────────────────────────────────── */
-  #screen-kunden { display: none; padding: 24px; max-width: 900px; margin: 0 auto; }
-  .kunden-header {
-    background: var(--blue); color: #fff; border-radius: 12px;
-    padding: 22px 28px; margin-bottom: 20px;
-  }
-  .kunden-header h2 { font-size: 1.4rem; margin-bottom: 4px; }
-  .kunden-header p  { color: var(--light); font-size: .9rem; }
-
-  .kunden-toolbar {
-    display: flex; gap: 10px; flex-wrap: wrap;
-    background: #fff; border-radius: 10px; padding: 16px 20px;
-    margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,.07);
-    align-items: center;
-  }
-  .kunden-search {
-    flex: 1; min-width: 200px;
-    border: 1px solid var(--border); border-radius: 6px;
-    padding: 9px 14px; font-size: .9rem; background: var(--ans);
-  }
-  .kunden-search:focus { outline: 2px solid var(--mid); border-color: var(--mid); }
-
-  .kunden-list { background: #fff; border-radius: 10px; box-shadow: 0 1px 6px rgba(0,0,0,.07); overflow: hidden; }
-  .kunden-list-header {
-    display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 120px;
-    background: var(--blue); color: #fff;
-    padding: 10px 16px; font-size: .8rem; font-weight: bold;
-  }
-  .kunden-row {
-    display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 120px;
-    padding: 11px 16px; border-bottom: 1px solid #eee;
-    align-items: center; font-size: .85rem;
-    transition: background .12s; cursor: pointer;
-  }
-  .kunden-row:hover { background: #f0f7ff; }
-  .kunden-row.hat-bogen { background: #f0fff4; }
-  .kunden-row.hat-bogen:hover { background: #e0f5e9; }
-  .kunden-badge {
-    font-size: .72rem; font-weight: bold; border-radius: 4px;
-    padding: 2px 7px; display: inline-block;
-  }
-  .badge-offen   { background: #FFF3CD; color: #856404; }
-  .badge-erfasst { background: #D4EDDA; color: #155724; }
-
-  .import-box {
-    background: #fff; border-radius: 10px; padding: 20px;
-    margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,.07);
-    border: 2px dashed var(--border);
-  }
-  .import-box h3 { color: var(--blue); margin-bottom: 10px; font-size: 1rem; }
-  .import-box p  { font-size: .85rem; color: #555; margin-bottom: 12px; }
-  #csv-file-input { display: none; }
-  .import-drop {
-    border: 2px dashed var(--mid); border-radius: 8px;
-    padding: 24px; text-align: center; cursor: pointer;
-    color: var(--mid); font-weight: bold; font-size: .9rem;
-    transition: background .15s;
-  }
-  .import-drop:hover { background: var(--light); }
-
-  .kunden-empty { text-align: center; padding: 40px; color: #aaa; font-size: .95rem; }
-
-  @media(max-width:600px) {
-    .kunden-list-header, .kunden-row {
-      grid-template-columns: 2fr 1fr 100px;
-    }
-    .kunden-list-header > *:nth-child(2),
-    .kunden-list-header > *:nth-child(4),
-    .kunden-row > *:nth-child(2),
-    .kunden-row > *:nth-child(4) { display: none; }
-  }
-
 </style>
 </head>
 <body>
@@ -380,54 +230,10 @@
   <div class="logo">NEHLSEN MV <span>| Abfragebögen Außendienst</span></div>
   <div id="header-actions">
     <button id="install-btn">📲 App installieren</button>
-    <button class="btn btn-outline btn-sm" onclick="showKunden()">👥 Kunden</button>
     <button class="btn btn-outline btn-sm" onclick="goHome()">🏠 Übersicht</button>
     <button class="btn btn-light btn-sm" id="btn-print" style="display:none" onclick="printPDF()">🖨️ PDF speichern</button>
     <button class="btn btn-success btn-sm" id="btn-summary" style="display:none" onclick="showSummary()">📋 Zusammenfassung</button>
     <button class="btn btn-danger btn-sm" id="btn-reset" style="display:none" onclick="resetForm()">🗑️ Zurücksetzen</button>
-  </div>
-</div>
-
-
-<!-- SCREEN 0: Kunden -->
-<div id="screen-kunden">
-  <div class="kunden-header">
-    <h2>👥 Kundenliste</h2>
-    <p>Wählen Sie einen Kunden aus oder importieren Sie Ihre Kundenliste aus Excel/CSV.</p>
-  </div>
-
-  <div class="import-box">
-    <h3>📂 Kundenliste importieren (Excel / CSV)</h3>
-    <p>Exportieren Sie Ihre Kundenliste aus Excel als <b>CSV-Datei</b> mit den Spalten:<br>
-    <code style="background:#f5f5f5;padding:2px 6px;border-radius:4px;font-size:.82rem;">Kundenname;Debitor;Ansprechpartner;Adresse;Telefon;Branche</code></p>
-    <div class="import-drop" onclick="document.getElementById('csv-file-input').click()" 
-         ondragover="event.preventDefault()" ondrop="handleDrop(event)">
-      📄 CSV-Datei hier hineinziehen oder klicken zum Auswählen
-    </div>
-    <input type="file" id="csv-file-input" accept=".csv,.txt" onchange="importCSV(this)">
-    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
-      <button class="btn btn-primary btn-sm" onclick="downloadMusterCSV()">⬇️ Muster-CSV herunterladen</button>
-      <button class="btn btn-danger btn-sm" onclick="clearKunden()">🗑️ Liste leeren</button>
-    </div>
-  </div>
-
-  <div style="background:#fff;border-radius:10px;padding:16px 20px;margin-bottom:16px;box-shadow:0 1px 6px rgba(0,0,0,.07);">
-    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-      <input class="kunden-search" id="kunden-search" placeholder="🔍 Name, Debitor-Nr., Ort, Branche suchen…" oninput="renderKundenList()">
-      <button class="btn btn-success btn-sm" onclick="neuerKunde()">➕ Neuer Kunde</button>
-      <span id="kunden-count" style="font-size:.82rem;color:#777;"></span>
-    </div>
-  </div>
-
-  <div class="kunden-list">
-    <div class="kunden-list-header">
-      <span>Kundenname</span>
-      <span>Debitor-Nr.</span>
-      <span>Branche</span>
-      <span>Ort</span>
-      <span>Status</span>
-    </div>
-    <div id="kunden-list-body"></div>
   </div>
 </div>
 
@@ -773,94 +579,6 @@ const BRANCHEN = [
       },
     ]
   },
-
-  {
-    id: "handwerk", icon: "🔨", name: "Handwerk",
-    intro: "Abfallanalyse für Handwerksbetriebe aller Gewerke",
-    color: "#7B3F00",
-    sections: [
-      {
-        title: "Betriebsprofil", icon: "🏢",
-        fields: [
-          { id:"q1", type:"text", label:"Gewerk / Fachrichtung (z. B. Sanitär, Elektro, Maler, Schreiner)?" },
-          { id:"q2", type:"text", label:"Anzahl Mitarbeitende / Gesellen?" },
-          { id:"q3", type:"text", label:"Anzahl aktiver Baustellen / Aufträge pro Monat?" },
-          { id:"q4", type:"text", label:"Bestehender Entsorgungspartner?" },
-        ]
-      },
-      {
-        title: "Abfallfraktionen", icon: "♻️",
-        fields: [
-          { id:"c1", type:"check", label:"Welche Abfälle fallen regelmäßig an?",
-            options:["Bauschutt / Abbruchmaterial","Altholz","Metallschrott","Kabel / Leitungen","Kunststoffreste","Dämmstoffe / Mineralwolle","Verpackungen (Karton/Folie)","Lösemittel / Reiniger","Lacke / Farbreste","Leere Gebinde / Spraydosen","Elektronikschrott","Restmüll (gemischt)","Altreifen (Fahrzeuge)","Sonstiges"] },
-          { id:"q5", type:"textarea", label:"Fallen gefährliche Abfälle an (Lösemittel, Asbest, KMF)?" },
-          { id:"q6", type:"text",     label:"Durchschnittliches Abfallvolumen pro Woche (ca.)?" },
-          { id:"q7", type:"textarea", label:"Werden Abfälle aktuell selbst zur Deponie gebracht?" },
-        ]
-      },
-      {
-        title: "Logistik & Behälter", icon: "🚐",
-        fields: [
-          { id:"q8",  type:"textarea", label:"Werden Container / Big Bags auf Baustellen benötigt?" },
-          { id:"q9",  type:"text",     label:"Wie kurzfristig muss Entsorgung verfügbar sein?" },
-          { id:"q10", type:"textarea", label:"Gibt es einen Betriebshof / Lagerplatz für Abfälle?" },
-          { id:"q11", type:"textarea", label:"Werden Entsorgungsnachweise für Auftraggeber benötigt?" },
-        ]
-      },
-      {
-        title: "Optimierungspotenzial", icon: "💡",
-        fields: [
-          { id:"q12", type:"textarea", label:"Größte Herausforderungen bei der aktuellen Entsorgung?" },
-          { id:"q13", type:"textarea", label:"Interesse an flexiblem Container-Abrufservice?" },
-          { id:"q14", type:"textarea", label:"Interesse an Rahmenvertrag für laufende Projekte?" },
-        ]
-      },
-    ]
-  },
-  {
-    id: "dienstleistung", icon: "💼", name: "Dienstleistung",
-    intro: "Abfallanalyse für Dienstleistungsunternehmen & freie Berufe",
-    color: "#2C3E6B",
-    sections: [
-      {
-        title: "Betriebsprofil", icon: "🏢",
-        fields: [
-          { id:"q1", type:"text", label:"Art des Dienstleistungsunternehmens (z. B. Reinigung, Sicherheit, IT, Beratung)?" },
-          { id:"q2", type:"text", label:"Anzahl Mitarbeitende am Standort?" },
-          { id:"q3", type:"text", label:"Anzahl Standorte / Filialen?" },
-          { id:"q4", type:"text", label:"Bestehender Entsorgungspartner?" },
-        ]
-      },
-      {
-        title: "Abfallfraktionen", icon: "♻️",
-        fields: [
-          { id:"c1", type:"check", label:"Welche Abfälle fallen regelmäßig an?",
-            options:["Papier / Akten (vertraulich)","Papier / Akten (nicht vertraulich)","Verpackungen","Elektronikschrott (IT)","Restmüll","Reinigungsmittelgebinde","Textilien / Arbeitskleidung","Sperrmüll (Mobiliar)","Leuchtstoffröhren / Batterien","Hygieneartikel / Sanitärabfälle","Sonstiges"] },
-          { id:"q5", type:"text",     label:"Monatliches Papier-/Aktenaufkommen (ca.)?" },
-          { id:"q6", type:"textarea", label:"Wie werden vertrauliche Dokumente aktuell vernichtet?" },
-          { id:"q7", type:"textarea", label:"Fallen bei Kundenbesuchen / außerhalb Abfälle an?" },
-        ]
-      },
-      {
-        title: "Datenschutz & Compliance", icon: "🔒",
-        fields: [
-          { id:"q8",  type:"text",     label:"Gibt es einen Datenschutzbeauftragten?" },
-          { id:"q9",  type:"textarea", label:"Werden Vernichtungszertifikate für Kunden benötigt?" },
-          { id:"q10", type:"textarea", label:"Gibt es Anforderungen an Sicherheitsstufen (DIN 66399)?" },
-          { id:"q11", type:"textarea", label:"Bestehen besondere Compliance-Anforderungen (ISO, TISAX etc.)?" },
-        ]
-      },
-      {
-        title: "Optimierungspotenzial", icon: "💡",
-        fields: [
-          { id:"q12", type:"textarea", label:"Größte Herausforderungen bei der aktuellen Entsorgung?" },
-          { id:"q13", type:"textarea", label:"Interesse an zertifizierter Aktenvernichtung (BDSG)?" },
-          { id:"q14", type:"textarea", label:"Interesse an regelmäßiger IT-Schrott-Abholung?" },
-          { id:"q15", type:"textarea", label:"Interesse an Gesamtlösung für alle Standorte?" },
-        ]
-      },
-    ]
-  },
   {
     id: "buero", icon: "🏢", name: "Büro & Verwaltung",
     intro: "Abfallanalyse für Büros, Behörden und Dienstleistungsunternehmen",
@@ -906,35 +624,6 @@ const BRANCHEN = [
   },
 ];
 
-
-// ─── SAFE STORAGE (iOS/Privacy robust) ───────────────────────────────────────
-const SafeStorage = (() => {
-  let mem = {};
-  function ok(store) {
-    try {
-      const k = "__t" + Date.now();
-      store.setItem(k, "1");
-      store.removeItem(k);
-      return true;
-    } catch(e) { return false; }
-  }
-  const hasLocal = (() => { try { return ok(window.localStorage); } catch(e){ return false; } })();
-  const hasSession = (() => { try { return ok(window.sessionStorage); } catch(e){ return false; } })();
-  const store = hasLocal ? window.localStorage : (hasSession ? window.sessionStorage : null);
-  return {
-    mode: hasLocal ? "localStorage" : (hasSession ? "sessionStorage" : "memory"),
-    getItem: (k) => {
-      try { return store ? store.getItem(k) : (mem[k] ?? null); } catch(e) { return mem[k] ?? null; }
-    },
-    setItem: (k, v) => {
-      try { if (store) store.setItem(k, v); else mem[k] = String(v); } catch(e) { mem[k] = String(v); }
-    },
-    removeItem: (k) => {
-      try { if (store) store.removeItem(k); else delete mem[k]; } catch(e) { delete mem[k]; }
-    }
-  };
-})();
-
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let currentBranche = null;
 let formData = {};   // { fieldId: value }
@@ -942,7 +631,6 @@ let metaData = {};   // { unternehmen, ansprechpartner, adresse, telefon, datum,
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 function init() {
-  loadKundenFromStorage();
   const grid = document.getElementById("branch-grid");
   BRANCHEN.forEach(b => {
     const card = document.createElement("div");
@@ -954,13 +642,10 @@ function init() {
 }
 
 // ─── LOAD BRANCHE ─────────────────────────────────────────────────────────────
-function loadBranche(b, fromKunde) {
+function loadBranche(b) {
   currentBranche = b;
   formData = {};
   metaData = {};
-
-  // Wenn nicht von Kunde aufgerufen, Daten zurücksetzen
-  if (!fromKunde) { formData = {}; metaData = {}; }
 
   // Header
   document.getElementById("fh-icon").textContent = b.icon;
@@ -978,11 +663,10 @@ function loadBranche(b, fromKunde) {
   metaDiv.className = "meta-grid";
   const metaFields = [
     { id:"unternehmen",    label:"Unternehmen" },
-    { id:"debitor",        label:"Debitor-Nr." },
     { id:"ansprechpartner",label:"Ansprechpartner" },
     { id:"adresse",        label:"Adresse" },
     { id:"telefon",        label:"Telefon / E-Mail" },
-    { id:"datum",          label:"Datum", value: metaData.datum || new Date().toLocaleDateString("de-DE") },
+    { id:"datum",          label:"Datum", value: new Date().toLocaleDateString("de-DE") },
     { id:"berater",        label:"Nehlsen-Berater/in" },
   ];
   metaFields.forEach(f => {
@@ -1013,9 +697,6 @@ function loadBranche(b, fromKunde) {
     let qNr = 1;
     sec.fields.forEach(f => {
       if (f.type === "check") {
-        renderFraktionsTabelle(f, secBody, b);
-        return; // Tabelle wurde bereits eingefügt
-        // Legacy-Code (nicht mehr aktiv):
         const wrap = document.createElement("div");
         wrap.innerHTML = `<div class="check-label-main">${f.label}</div>`;
         const grid = document.createElement("div");
@@ -1152,7 +833,6 @@ let saveTimer;
 function autoSave() {
   clearTimeout(saveTimer);
   saveToStorage();
-    saveBogenFuerKunde();
     saveTimer = setTimeout(() => {
     const toast = document.getElementById("toast");
     toast.style.display = "block";
@@ -1174,8 +854,8 @@ function showSummary() {
   const metaSec = document.createElement("div");
   metaSec.className = "summary-section";
   metaSec.innerHTML = `<h3>📋 Stammdaten</h3>`;
-  const metaFields = ["unternehmen","debitor","ansprechpartner","adresse","telefon","datum","berater"];
-  const metaLabels = ["Unternehmen","Debitor-Nr.","Ansprechpartner","Adresse","Telefon / E-Mail","Datum","Berater"];
+  const metaFields = ["unternehmen","ansprechpartner","adresse","telefon","datum","berater"];
+  const metaLabels = ["Unternehmen","Ansprechpartner","Adresse","Telefon / E-Mail","Datum","Berater"];
   metaFields.forEach((f, i) => {
     const v = document.getElementById(`meta_${f}`)?.value || metaData[f] || "—";
     metaSec.innerHTML += `<div class="summary-row"><div class="sq-label" style="min-width:160px;font-size:.85rem;color:#555;">${metaLabels[i]}:</div><div class="sq-val">${v || "—"}</div></div>`;
@@ -1191,57 +871,8 @@ function showSummary() {
     sec.fields.forEach(f => {
       const v = formData[f.id];
       if (f.type === "check") {
-        // Fraktions-Tabelle in Zusammenfassung
-        let frakRows = "";
-        let nehlsenCount = 0;
-        f.options.forEach((opt, idx) => {
-          const rowId = f.id + "_" + idx;
-          const fd = formData["frak_" + rowId] || {};
-          const nehlsen = fd.nehlsen === "ja";
-          const wett = fd.wett === "ja";
-          const menge = fd.menge || "—";
-          const rhythmus = fd.rhythmus || "—";
-          if (!nehlsen && !wett && menge === "—" && rhythmus === "—") return; // leer überspringen
-          if (nehlsen) nehlsenCount++;
-          const bg = nehlsen ? "#e8f5e9" : wett ? "#fdecea" : "#fff";
-          const wett_menge = fd.wett_menge || "";
-          const wett_rhythmus = fd.wett_rhythmus || "";
-          const wett_preis = fd.wett_preis || "";
-          const badge = nehlsen ? '<span style="background:#1A7A3C;color:#fff;border-radius:4px;padding:2px 6px;font-size:.72rem;">✅ Nehlsen</span>' 
-                      : wett    ? '<span style="background:#C0392B;color:#fff;border-radius:4px;padding:2px 6px;font-size:.72rem;">❌ Wettbewerb</span>'
-                      : '<span style="background:#E67E22;color:#fff;border-radius:4px;padding:2px 6px;font-size:.72rem;">🔶 Offen</span>';
-          const wettDetail = wett && (wett_menge || wett_rhythmus || wett_preis) ? 
-            `<tr style="background:#fff0f0;border-bottom:1px solid #eee;">
-              <td colspan="4" style="padding:4px 8px 6px 20px;font-size:.76rem;color:#C0392B;">
-                📦 Menge: <b>${wett_menge||"—"}</b> &nbsp;|&nbsp; 
-                🔄 Rhythmus: <b>${wett_rhythmus||"—"}</b> &nbsp;|&nbsp; 
-                💰 Preis: <b>${wett_preis||"—"}</b>
-              </td>
-            </tr>` : "";
-          frakRows += `<tr style="background:${bg};border-bottom:1px solid #eee;">
-            <td style="padding:5px 8px;font-weight:bold;font-size:.8rem;">${opt}</td>
-            <td style="padding:5px 8px;text-align:center;">${badge}</td>
-            <td style="padding:5px 8px;font-size:.8rem;">${menge}</td>
-            <td style="padding:5px 8px;font-size:.8rem;">${rhythmus}</td>
-          </tr>${wettDetail}`;
-        });
-        if (frakRows) {
-          secEl.innerHTML += `
-            <div style="margin-bottom:12px;">
-              <div style="font-size:.85rem;font-weight:bold;color:#555;margin-bottom:6px;">${f.label}</div>
-              <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
-                <thead><tr style="background:var(--blue);color:#fff;">
-                  <th style="padding:6px 8px;text-align:left;">Fraktion</th>
-                  <th style="padding:6px 8px;text-align:center;">Status</th>
-                  <th style="padding:6px 8px;text-align:left;">Menge (Nehlsen)</th>
-                  <th style="padding:6px 8px;text-align:left;">Rhythmus (Nehlsen)</th>
-                </tr></thead>
-                <tbody>${frakRows}</tbody>
-              </table>
-            </div>`;
-        } else {
-          secEl.innerHTML += `<div style="color:#aaa;font-size:.85rem;margin-bottom:12px;">Keine Fraktionen erfasst</div>`;
-        }
+        const chips = (v && v.length) ? v.map(x => `<span class="chip">${x}</span>`).join("") : `<span style="color:#aaa;font-size:.85rem;">Keine Auswahl</span>`;
+        secEl.innerHTML += `<div class="summary-row"><div class="sq-label" style="min-width:100%;font-size:.85rem;color:#555;margin-bottom:6px;">${f.label}</div></div><div class="chips" style="margin-bottom:12px;">${chips}</div>`;
       } else {
         const val = (v && v.trim()) ? v : `<span style="color:#aaa;">—</span>`;
         secEl.innerHTML += `<div class="summary-row"><div class="sq" style="background:var(--blue)">${qNr++}</div><div class="sa"><div class="sq-label">${f.label}</div><div class="sq-val">${val}</div></div></div>`;
@@ -1280,12 +911,10 @@ function showForm() {
   window.scrollTo(0, 0);
 }
 
-function goHome(keepMeta) {
-  if (!keepMeta) { currentBranche = null; }
-  document.getElementById("screen-kunden").style.display = "none";
-  document.getElementById("screen-select").style.display = "block";
+function goHome() {
   document.getElementById("screen-form").style.display = "none";
   document.getElementById("screen-summary").style.display = "none";
+  document.getElementById("screen-select").style.display = "block";
   document.getElementById("btn-print").style.display = "none";
   document.getElementById("btn-summary").style.display = "none";
   document.getElementById("btn-reset").style.display = "none";
@@ -1298,407 +927,9 @@ function resetForm() {
 }
 
 init();
-
-// ─── SAFE AUTOSTART ──────────────────────────────────────────────────────────
-let __appStarted = false;
-function startAppOnce() {
-  if (__appStarted) return;
-  __appStarted = true;
-  try { init(); } catch(e) { console.error("Init failed:", e); }
-}
-
-document.addEventListener("DOMContentLoaded", startAppOnce);
-window.addEventListener("pageshow", startAppOnce);
-
 </script>
 
 <script>
-
-// ─── FRAKTIONS-TABELLE RENDERN ────────────────────────────────────────────────
-function renderFraktionsTabelle(f, secBody, b) {
-  const wrap = document.createElement("div");
-
-  // Legende
-  wrap.innerHTML = `
-    <div class="check-label-main" style="margin-bottom:8px;">${f.label}</div>
-    <div class="frak-legend">
-      <span><span class="leg-dot" style="background:#1A7A3C"></span> Bereits bei Nehlsen</span>
-      <span><span class="leg-dot" style="background:#C0392B"></span> Beim Wettbewerb / Selbst</span>
-      <span><span class="leg-dot" style="background:#E67E22"></span> Potenzial / Offen</span>
-    </div>`;
-
-  const table = document.createElement("table");
-  table.className = "frak-table";
-  table.innerHTML = `<thead><tr>
-    <th>Fraktion</th>
-    <th>Bei Nehlsen?</th>
-    <th>Wettbewerb?</th>
-    <th>Menge / Behälter</th>
-    <th>Abholrhythmus</th>
-  </tr></thead>`;
-
-  const tbody = document.createElement("tbody");
-
-  f.options.forEach((opt, idx) => {
-    const rowId = f.id + "_" + idx;
-    const tr = document.createElement("tr");
-    tr.id = "row_" + rowId;
-
-    // Fraktion Name
-    const tdName = document.createElement("td");
-    tdName.style.fontWeight = "bold";
-    tdName.style.color = "var(--blue)";
-    tdName.textContent = opt;
-
-    // Bei Nehlsen Toggle
-    const tdNehlsen = document.createElement("td");
-    tdNehlsen.innerHTML = `<div class="tog-wrap">
-      <button class="tog-btn" data-row="${rowId}" data-col="nehlsen" data-val="ja" onclick="togFrak(this)">✅ Ja</button>
-    </div>`;
-
-    // Wettbewerb Toggle
-    const tdWett = document.createElement("td");
-    tdWett.innerHTML = `<div class="tog-wrap">
-      <button class="tog-btn" data-row="${rowId}" data-col="wett" data-val="ja" onclick="togFrak(this)">❌ Ja</button>
-    </div>`;
-
-    // Menge
-    const tdMenge = document.createElement("td");
-    tdMenge.innerHTML = `<input class="frak-input" type="text" placeholder="z. B. 1,1m³ Container" 
-      oninput="saveFrak('${rowId}','menge',this.value)">`;
-
-    // Rhythmus
-    const tdRhythmus = document.createElement("td");
-    tdRhythmus.innerHTML = `<input class="frak-input" type="text" placeholder="z. B. 2x/Woche" 
-      oninput="saveFrak('${rowId}','rhythmus',this.value)">`;
-
-    tr.appendChild(tdName);
-    tr.appendChild(tdNehlsen);
-    tr.appendChild(tdWett);
-    tr.appendChild(tdMenge);
-    tr.appendChild(tdRhythmus);
-    tbody.appendChild(tr);
-
-    // Wettbewerb-Detail-Zeile (versteckt, wird bei Wettbewerb-Klick sichtbar)
-    const detailTr = document.createElement("tr");
-    detailTr.id = "wett_detail_" + rowId;
-    detailTr.className = "wett-detail-row";
-    const detailTd = document.createElement("td");
-    detailTd.colSpan = 5;
-    detailTd.className = "wett-detail-cell";
-    detailTd.innerHTML = `
-      <div class="wett-hint">❌ Wettbewerb – bitte Details erfassen:</div>
-      <div class="wett-detail-inner" style="margin-top:6px;">
-        <div class="wett-field-wrap">
-          <label>Menge / Behälter (Wettbewerb)</label>
-          <input type="text" id="wett_menge_${rowId}" placeholder="z. B. 1,1m³ Container"
-            oninput="saveFrak('${rowId}','wett_menge',this.value)">
-        </div>
-        <div class="wett-field-wrap">
-          <label>Abholrhythmus (Wettbewerb)</label>
-          <input type="text" id="wett_rhythmus_${rowId}" placeholder="z. B. 1x pro Woche"
-            oninput="saveFrak('${rowId}','wett_rhythmus',this.value)">
-        </div>
-        <div class="wett-field-wrap">
-          <label>💰 Wettbewerbspreis (€/t oder €/Leerung)</label>
-          <input type="text" id="wett_preis_${rowId}" placeholder="z. B. 120 €/t"
-            oninput="saveFrak('${rowId}','wett_preis',this.value)">
-        </div>
-      </div>`;
-    detailTr.appendChild(detailTd);
-    tbody.appendChild(detailTr);
-  });
-
-  table.appendChild(tbody);
-  wrap.appendChild(table);
-  secBody.appendChild(wrap);
-}
-
-function togFrak(btn) {
-  const row = btn.dataset.row;
-  const col = btn.dataset.col;
-  const isActive = btn.classList.contains("active-ja") || btn.classList.contains("active-nein");
-
-  if (isActive) {
-    btn.classList.remove("active-ja","active-nein");
-    saveFrak(row, col, "");
-  } else {
-    // Wenn Nehlsen aktiviert wird → Wettbewerb deaktivieren und umgekehrt
-    if (col === "nehlsen") {
-      const wettBtn = document.querySelector(`.tog-btn[data-row="${row}"][data-col="wett"]`);
-      if (wettBtn) { wettBtn.classList.remove("active-ja","active-nein"); saveFrak(row,"wett",""); }
-      hideWettDetail(row);
-      btn.classList.add("active-ja");
-      saveFrak(row, col, "ja");
-    } else {
-      // Wettbewerb aktiviert → Nehlsen deaktivieren, Detail-Zeile zeigen
-      const nehlsenBtn = document.querySelector(`.tog-btn[data-row="${row}"][data-col="nehlsen"]`);
-      if (nehlsenBtn) { nehlsenBtn.classList.remove("active-ja","active-nein"); saveFrak(row,"nehlsen",""); }
-      btn.classList.add("active-nein");
-      saveFrak(row, col, "ja");
-      showWettDetail(row);
-    }
-  }
-  updateRowColor(row);
-  autoSave();
-}
-
-function showWettDetail(rowId) {
-  const detailRow = document.getElementById("wett_detail_" + rowId);
-  if (detailRow) detailRow.classList.add("visible");
-}
-
-function hideWettDetail(rowId) {
-  const detailRow = document.getElementById("wett_detail_" + rowId);
-  if (detailRow) detailRow.classList.remove("visible");
-  // Werte löschen
-  ["wett_menge","wett_rhythmus","wett_preis"].forEach(k => {
-    const inp = document.getElementById(k + "_" + rowId);
-    if (inp) inp.value = "";
-    if (!formData["frak_" + rowId]) formData["frak_" + rowId] = {};
-    formData["frak_" + rowId][k] = "";
-  });
-}
-
-function updateRowColor(rowId) {
-  const tr = document.getElementById("row_" + rowId);
-  if (!tr) return;
-  const data = formData["frak_" + rowId] || {};
-  if (data.nehlsen === "ja") {
-    tr.className = "row-nehlsen";
-  } else {
-    tr.className = "";
-  }
-}
-
-function saveFrak(rowId, col, val) {
-  const key = "frak_" + rowId;
-  if (!formData[key]) formData[key] = {};
-  formData[key][col] = val;
-  updateProgress();
-  autoSave();
-}
-
-
-// ─── KUNDEN-VERWALTUNG ────────────────────────────────────────────────────────
-let kundenListe = [];
-
-function loadKundenFromStorage() {
-  try {
-    const raw = SafeStorage.getItem("nehlsen_kunden");
-    if (raw) kundenListe = JSON.parse(raw);
-  } catch(e) { kundenListe = []; }
-}
-
-function saveKundenToStorage() {
-  try { SafeStorage.setItem("nehlsen_kunden", JSON.stringify(kundenListe)); } catch(e) {}
-}
-
-function showKunden() {
-  loadKundenFromStorage();
-  document.getElementById("screen-select").style.display = "none";
-  document.getElementById("screen-form").style.display = "none";
-  document.getElementById("screen-summary").style.display = "none";
-  document.getElementById("screen-kunden").style.display = "block";
-  document.getElementById("btn-print").style.display = "none";
-  document.getElementById("btn-summary").style.display = "none";
-  document.getElementById("btn-reset").style.display = "none";
-  renderKundenList();
-}
-
-function renderKundenList() {
-  const q = (document.getElementById("kunden-search")?.value || "").toLowerCase();
-  const body = document.getElementById("kunden-list-body");
-  const filtered = kundenListe.filter(k =>
-    (k.name||"").toLowerCase().includes(q) ||
-    (k.debitor||"").toLowerCase().includes(q) ||
-    (k.ansprechpartner||"").toLowerCase().includes(q) ||
-    (k.ort||"").toLowerCase().includes(q) ||
-    (k.branche||"").toLowerCase().includes(q)
-  );
-  document.getElementById("kunden-count").textContent = `${filtered.length} von ${kundenListe.length} Kunden`;
-
-  if (filtered.length === 0) {
-    body.innerHTML = `<div class="kunden-empty">
-      ${kundenListe.length === 0 
-        ? "📂 Noch keine Kunden vorhanden.<br>CSV importieren oder neuen Kunden anlegen."
-        : "🔍 Keine Kunden gefunden."}
-    </div>`;
-    return;
-  }
-
-  body.innerHTML = filtered.map((k, i) => {
-    const idx = kundenListe.indexOf(k);
-    const hatBogen = !!SafeStorage.getItem("nehlsen_bogen_" + idx);
-    const badge = hatBogen 
-      ? '<span class="kunden-badge badge-erfasst">✅ Bogen erfasst</span>'
-      : '<span class="kunden-badge badge-offen">⬜ Offen</span>';
-    const ort = (k.adresse||"").split(",").pop()?.trim() || "—";
-    return `<div class="kunden-row ${hatBogen?'hat-bogen':''}" onclick="kundeAuswaehlen(${idx})">
-      <span style="font-weight:bold;color:var(--blue);">${k.name||"—"}</span>
-      <span style="color:#555;font-family:monospace;font-size:.82rem;">${k.debitor ? "<b style='color:var(--blue)'>D040</b>" + k.debitor.replace(/^D040/i,"") : "—"}</span>
-      <span style="color:#555;">${k.branche||"—"}</span>
-      <span style="color:#555;">${ort}</span>
-      <span>${badge}</span>
-    </div>`;
-  }).join("");
-}
-
-function kundeAuswaehlen(idx) {
-  const k = kundenListe[idx];
-  if (!k) return;
-  // Branche automatisch ermitteln
-  const brancheMap = {
-    "industrie": "industrie", "produktion": "industrie",
-    "bau": "bau", "abbruch": "bau", "tiefbau": "bau",
-    "werkstatt": "werkstatt", "kfz": "werkstatt", "auto": "werkstatt",
-    "landwirt": "landwirtschaft", "hof": "landwirtschaft", "agrar": "landwirtschaft",
-    "handel": "handel", "logistik": "handel", "lager": "handel",
-    "gastro": "gastro", "restaurant": "gastro", "hotel": "gastro", "lebensmittel": "gastro",
-    "gesundheit": "gesundheit", "klinik": "gesundheit", "praxis": "gesundheit", "pflege": "gesundheit",
-    "handwerk": "handwerk", "sanitär": "handwerk", "elektro": "handwerk", "maler": "handwerk",
-    "dienstleistung": "dienstleistung", "reinigung": "dienstleistung", "beratung": "dienstleistung",
-    "büro": "buero", "verwaltung": "buero", "behörde": "buero",
-  };
-  let matchedBranche = null;
-  const brancheText = (k.branche||"").toLowerCase();
-  for (const [key, val] of Object.entries(brancheMap)) {
-    if (brancheText.includes(key)) { matchedBranche = val; break; }
-  }
-
-  // Gespeicherten Bogen laden falls vorhanden
-  try {
-    const saved = SafeStorage.getItem("nehlsen_bogen_" + idx);
-    if (saved) {
-      const payload = JSON.parse(saved);
-      formData = payload.formData || {};
-      metaData = payload.metaData || {};
-    } else {
-      formData = {}; metaData = {};
-    }
-  } catch(e) { formData = {}; metaData = {}; }
-
-  // Stammdaten vorbelegen
-  metaData._kundeIdx = idx;
-  metaData.unternehmen = metaData.unternehmen || k.name || "";
-  metaData.debitor = metaData.debitor || k.debitor || "";
-  metaData.ansprechpartner = metaData.ansprechpartner || k.ansprechpartner || "";
-  metaData.adresse = metaData.adresse || k.adresse || "";
-  metaData.telefon = metaData.telefon || k.telefon || "";
-  metaData.datum = metaData.datum || new Date().toLocaleDateString("de-DE");
-
-  if (matchedBranche) {
-    const b = BRANCHEN.find(x => x.id === matchedBranche);
-    if (b) { loadBranche(b, true); return; }
-  }
-  // Keine Branche erkannt → Branchenauswahl zeigen mit vorausgefüllten Stammdaten
-  goHome(true);
-}
-
-function neuerKunde() {
-  const name = prompt("Kundenname:");
-  if (!name) return;
-  let debitor = prompt("Debitor-Nummer (optional, z. B. D040123456):") || "";
-  if (debitor && !debitor.toUpperCase().startsWith("D040")) debitor = "D040" + debitor;
-  const ansprechpartner = prompt("Ansprechpartner (optional):") || "";
-  const adresse = prompt("Adresse (optional):") || "";
-  const branche = prompt("Branche (optional, z. B. Handwerk):") || "";
-  kundenListe.push({ name, debitor, ansprechpartner, adresse, branche });
-  saveKundenToStorage();
-  renderKundenList();
-}
-
-// ─── CSV IMPORT ───────────────────────────────────────────────────────────────
-function importCSV(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    parseCSV(e.target.result);
-    input.value = "";
-  };
-  reader.readAsText(file, "UTF-8");
-}
-
-function handleDrop(e) {
-  e.preventDefault();
-  const file = e.dataTransfer.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => parseCSV(ev.target.result);
-  reader.readAsText(file, "UTF-8");
-}
-
-function parseCSV(text) {
-  const lines = text.trim().split(/\r?\n/);
-  if (lines.length < 2) { alert("CSV hat keine Datenzeilen."); return; }
-  
-  // Trennzeichen erkennen (Semikolon oder Komma)
-  const sep = lines[0].includes(";") ? ";" : ",";
-  const header = lines[0].split(sep).map(h => h.trim().toLowerCase().replace(/[^a-z]/g,""));
-  
-  // Spalten-Mapping
-  const colIdx = {
-    name:            header.findIndex(h => ["kundenname","name","firma","unternehmen","kunde"].includes(h)),
-    debitor:         header.findIndex(h => ["debitor","debitorennummer","debitorenr","kundennummer","kdnr","kd","debitornr","debitorennr"].includes(h)),
-    ansprechpartner: header.findIndex(h => ["ansprechpartner","kontakt","ap","ansprechp"].includes(h)),
-    adresse:         header.findIndex(h => ["adresse","address","ort","strasse"].includes(h)),
-    telefon:         header.findIndex(h => ["telefon","tel","phone","email","mail"].includes(h)),
-    branche:         header.findIndex(h => ["branche","branchenname","typ","kategorie"].includes(h)),
-  };
-
-  let imported = 0;
-  let skipped = 0;
-  for (let i = 1; i < lines.length; i++) {
-    const cols = lines[i].split(sep);
-    if (cols.length < 2) continue;
-    const name = colIdx.name >= 0 ? (cols[colIdx.name]||"").trim() : cols[0]?.trim();
-    if (!name) { skipped++; continue; }
-    // Duplikat prüfen
-    if (kundenListe.some(k => k.name.toLowerCase() === name.toLowerCase())) { skipped++; continue; }
-    kundenListe.push({
-      name,
-      debitor:         (() => { let d = colIdx.debitor >= 0 ? (cols[colIdx.debitor]||"").trim() : ""; if (d && !d.toUpperCase().startsWith("D040")) d = "D040" + d; return d; })(),
-      ansprechpartner: colIdx.ansprechpartner >= 0 ? (cols[colIdx.ansprechpartner]||"").trim() : "",
-      adresse:         colIdx.adresse >= 0 ? (cols[colIdx.adresse]||"").trim() : "",
-      telefon:         colIdx.telefon >= 0 ? (cols[colIdx.telefon]||"").trim() : "",
-      branche:         colIdx.branche >= 0 ? (cols[colIdx.branche]||"").trim() : "",
-    });
-    imported++;
-  }
-  saveKundenToStorage();
-  renderKundenList();
-  alert(`✅ ${imported} Kunden importiert${skipped > 0 ? ", " + skipped + " übersprungen (Duplikate/leer)" : ""}.`);
-}
-
-function downloadMusterCSV() {
-  const csv = "Kundenname;Debitor;Ansprechpartner;Adresse;Telefon;Branche\n" +
-    "Müller GmbH;D040123456;Max Müller;Musterstraße 1, 19055 Schwerin;0385-123456;Industrie\n" +
-    "Bau AG;D040234567;Petra Bauer;Bauweg 5, 18057 Rostock;0381-654321;Bau\n" +
-    "Landgut Schmidt;D040345678;Hans Schmidt;Dorfstraße 10, 17033 Neubrandenburg;0395-111222;Landwirtschaft\n";
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "Nehlsen_Kunden_Muster.csv";
-  a.click();
-}
-
-function clearKunden() {
-  if (!confirm("Alle Kunden löschen? (Ausgefüllte Bögen bleiben erhalten)")) return;
-  kundenListe = [];
-  saveKundenToStorage();
-  renderKundenList();
-}
-
-// Bogen-Speicherung pro Kunde erweitern
-function saveBogenFuerKunde() {
-  const idx = metaData._kundeIdx;
-  if (idx === undefined || idx === null) return;
-  try {
-    SafeStorage.setItem("nehlsen_bogen_" + idx, JSON.stringify({ formData, metaData, ts: new Date().toISOString() }));
-  } catch(e) {}
-}
-
 // ─── PWA SERVICE WORKER ───────────────────────────────────────────────────────
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js").catch(e => console.log("SW:", e));
@@ -1723,12 +954,12 @@ function saveToStorage() {
   if (!currentBranche) return;
   const key = "nehlsen_" + currentBranche.id;
   const payload = { metaData, formData, ts: new Date().toISOString() };
-  try { SafeStorage.setItem(key, JSON.stringify(payload)); } catch(e) {}
+  try { localStorage.setItem(key, JSON.stringify(payload)); } catch(e) {}
 }
 
 function loadFromStorage(brancheId) {
   try {
-    const raw = SafeStorage.getItem("nehlsen_" + brancheId);
+    const raw = localStorage.getItem("nehlsen_" + brancheId);
     return raw ? JSON.parse(raw) : null;
   } catch(e) { return null; }
 }
@@ -1779,156 +1010,6 @@ function printPDF() {
   .check-item.checked { background: #e0eefc !important; border-color: #003B6E !important; }
   .progress-bar-wrap { display: none; }
 }
-
-  /* ── FRAKTIONS-TABELLE ─────────────────────────────────────────────────── */
-  .frak-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: .82rem; }
-  .frak-table thead tr { background: var(--blue); color: #fff; }
-  .frak-table thead th { padding: 8px 10px; text-align: left; font-weight: bold; font-size: .8rem; }
-  .frak-table thead th:nth-child(1) { width: 26%; }
-  .frak-table thead th:nth-child(2) { width: 14%; text-align:center; }
-  .frak-table thead th:nth-child(3) { width: 14%; text-align:center; }
-  .frak-table thead th:nth-child(4) { width: 23%; }
-  .frak-table thead th:nth-child(5) { width: 23%; }
-  .frak-table tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
-  .frak-table tbody tr:hover { background: #f0f7ff; }
-  .frak-table tbody tr.row-nehlsen { background: #e8f5e9; }
-  .frak-table tbody tr.row-nehlsen:hover { background: #d4edda; }
-  .frak-table td { padding: 7px 8px; vertical-align: middle; }
-  .frak-table td:nth-child(2), .frak-table td:nth-child(3) { text-align: center; }
-
-  /* Toggle-Buttons statt Checkboxen */
-  .tog-wrap { display: flex; justify-content: center; gap: 4px; }
-  .tog-btn {
-    border: 2px solid var(--border); border-radius: 5px;
-    padding: 4px 8px; font-size: .75rem; font-weight: bold;
-    cursor: pointer; background: #fff; color: #888;
-    transition: background .15s, color .15s, border-color .15s;
-    white-space: nowrap;
-  }
-  .tog-btn.active-ja  { background: #1A7A3C; color: #fff; border-color: #1A7A3C; }
-  .tog-btn.active-nein{ background: #C0392B; color: #fff; border-color: #C0392B; }
-  .tog-btn.active-pot { background: #E67E22; color: #fff; border-color: #E67E22; }
-
-  .frak-input {
-    width: 100%; border: 1px solid var(--border); border-radius: 5px;
-    padding: 5px 7px; font-size: .8rem; background: var(--ans);
-    font-family: Arial, sans-serif;
-  }
-  .frak-input:focus { outline: 2px solid var(--mid); border-color: var(--mid); }
-
-  .frak-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; font-size: .78rem; }
-  .frak-legend span { display: flex; align-items: center; gap: 4px; }
-  .leg-dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
-
-  @media(max-width: 600px) {
-    .frak-table thead th:nth-child(4),
-    .frak-table thead th:nth-child(5),
-    .frak-table td:nth-child(4),
-    .frak-table td:nth-child(5) { display: none; }
-    .frak-table thead th:nth-child(1) { width: 50%; }
-  }
-
-
-  /* ── WETTBEWERB-DETAIL-ZEILE ─────────────────────────────────────────── */
-  .wett-detail-row { display: none; background: #fff5f5; }
-  .wett-detail-row.visible { display: table-row; }
-  .wett-detail-cell { padding: 6px 8px 10px 8px !important; }
-  .wett-detail-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-  }
-  @media(max-width:600px) {
-    .wett-detail-inner { grid-template-columns: 1fr; }
-  }
-  .wett-field-wrap label {
-    font-size: .75rem; font-weight: bold; color: #C0392B;
-    display: block; margin-bottom: 3px;
-  }
-  .wett-field-wrap input {
-    width: 100%; border: 1px solid #e0a0a0; border-radius: 5px;
-    padding: 5px 7px; font-size: .8rem; background: #fff;
-    font-family: Arial, sans-serif;
-  }
-  .wett-field-wrap input:focus { outline: 2px solid #C0392B; border-color: #C0392B; }
-  .wett-hint {
-    font-size: .72rem; color: #C0392B; margin-top: 4px;
-    display: flex; align-items: center; gap: 4px;
-  }
-
-
-  /* ── KUNDEN-IMPORT & SUCHE ─────────────────────────────────────────────── */
-  #screen-kunden { display: none; padding: 24px; max-width: 900px; margin: 0 auto; }
-  .kunden-header {
-    background: var(--blue); color: #fff; border-radius: 12px;
-    padding: 22px 28px; margin-bottom: 20px;
-  }
-  .kunden-header h2 { font-size: 1.4rem; margin-bottom: 4px; }
-  .kunden-header p  { color: var(--light); font-size: .9rem; }
-
-  .kunden-toolbar {
-    display: flex; gap: 10px; flex-wrap: wrap;
-    background: #fff; border-radius: 10px; padding: 16px 20px;
-    margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,.07);
-    align-items: center;
-  }
-  .kunden-search {
-    flex: 1; min-width: 200px;
-    border: 1px solid var(--border); border-radius: 6px;
-    padding: 9px 14px; font-size: .9rem; background: var(--ans);
-  }
-  .kunden-search:focus { outline: 2px solid var(--mid); border-color: var(--mid); }
-
-  .kunden-list { background: #fff; border-radius: 10px; box-shadow: 0 1px 6px rgba(0,0,0,.07); overflow: hidden; }
-  .kunden-list-header {
-    display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 120px;
-    background: var(--blue); color: #fff;
-    padding: 10px 16px; font-size: .8rem; font-weight: bold;
-  }
-  .kunden-row {
-    display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 120px;
-    padding: 11px 16px; border-bottom: 1px solid #eee;
-    align-items: center; font-size: .85rem;
-    transition: background .12s; cursor: pointer;
-  }
-  .kunden-row:hover { background: #f0f7ff; }
-  .kunden-row.hat-bogen { background: #f0fff4; }
-  .kunden-row.hat-bogen:hover { background: #e0f5e9; }
-  .kunden-badge {
-    font-size: .72rem; font-weight: bold; border-radius: 4px;
-    padding: 2px 7px; display: inline-block;
-  }
-  .badge-offen   { background: #FFF3CD; color: #856404; }
-  .badge-erfasst { background: #D4EDDA; color: #155724; }
-
-  .import-box {
-    background: #fff; border-radius: 10px; padding: 20px;
-    margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,.07);
-    border: 2px dashed var(--border);
-  }
-  .import-box h3 { color: var(--blue); margin-bottom: 10px; font-size: 1rem; }
-  .import-box p  { font-size: .85rem; color: #555; margin-bottom: 12px; }
-  #csv-file-input { display: none; }
-  .import-drop {
-    border: 2px dashed var(--mid); border-radius: 8px;
-    padding: 24px; text-align: center; cursor: pointer;
-    color: var(--mid); font-weight: bold; font-size: .9rem;
-    transition: background .15s;
-  }
-  .import-drop:hover { background: var(--light); }
-
-  .kunden-empty { text-align: center; padding: 40px; color: #aaa; font-size: .95rem; }
-
-  @media(max-width:600px) {
-    .kunden-list-header, .kunden-row {
-      grid-template-columns: 2fr 1fr 100px;
-    }
-    .kunden-list-header > *:nth-child(2),
-    .kunden-list-header > *:nth-child(4),
-    .kunden-row > *:nth-child(2),
-    .kunden-row > *:nth-child(4) { display: none; }
-  }
-
 </style>
 
 </body>
