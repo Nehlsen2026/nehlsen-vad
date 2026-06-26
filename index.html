@@ -222,6 +222,83 @@
     #screen-form { display: block !important; padding: 0; }
     .section-block { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
   }
+
+  /* ── FRAKTIONS-TABELLE ─────────────────────────────────────────────────── */
+  .frak-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: .82rem; }
+  .frak-table thead tr { background: var(--blue); color: #fff; }
+  .frak-table thead th { padding: 8px 10px; text-align: left; font-weight: bold; font-size: .8rem; }
+  .frak-table thead th:nth-child(1) { width: 26%; }
+  .frak-table thead th:nth-child(2) { width: 14%; text-align:center; }
+  .frak-table thead th:nth-child(3) { width: 14%; text-align:center; }
+  .frak-table thead th:nth-child(4) { width: 23%; }
+  .frak-table thead th:nth-child(5) { width: 23%; }
+  .frak-table tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
+  .frak-table tbody tr:hover { background: #f0f7ff; }
+  .frak-table tbody tr.row-nehlsen { background: #e8f5e9; }
+  .frak-table tbody tr.row-nehlsen:hover { background: #d4edda; }
+  .frak-table td { padding: 7px 8px; vertical-align: middle; }
+  .frak-table td:nth-child(2), .frak-table td:nth-child(3) { text-align: center; }
+
+  /* Toggle-Buttons statt Checkboxen */
+  .tog-wrap { display: flex; justify-content: center; gap: 4px; }
+  .tog-btn {
+    border: 2px solid var(--border); border-radius: 5px;
+    padding: 4px 8px; font-size: .75rem; font-weight: bold;
+    cursor: pointer; background: #fff; color: #888;
+    transition: background .15s, color .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  .tog-btn.active-ja  { background: #1A7A3C; color: #fff; border-color: #1A7A3C; }
+  .tog-btn.active-nein{ background: #C0392B; color: #fff; border-color: #C0392B; }
+  .tog-btn.active-pot { background: #E67E22; color: #fff; border-color: #E67E22; }
+
+  .frak-input {
+    width: 100%; border: 1px solid var(--border); border-radius: 5px;
+    padding: 5px 7px; font-size: .8rem; background: var(--ans);
+    font-family: Arial, sans-serif;
+  }
+  .frak-input:focus { outline: 2px solid var(--mid); border-color: var(--mid); }
+
+  .frak-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; font-size: .78rem; }
+  .frak-legend span { display: flex; align-items: center; gap: 4px; }
+  .leg-dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+  @media(max-width: 600px) {
+    .frak-table thead th:nth-child(4),
+    .frak-table thead th:nth-child(5),
+    .frak-table td:nth-child(4),
+    .frak-table td:nth-child(5) { display: none; }
+    .frak-table thead th:nth-child(1) { width: 50%; }
+  }
+
+
+  /* ── WETTBEWERB-DETAIL-ZEILE ─────────────────────────────────────────── */
+  .wett-detail-row { display: none; background: #fff5f5; }
+  .wett-detail-row.visible { display: table-row; }
+  .wett-detail-cell { padding: 6px 8px 10px 8px !important; }
+  .wett-detail-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  @media(max-width:600px) {
+    .wett-detail-inner { grid-template-columns: 1fr; }
+  }
+  .wett-field-wrap label {
+    font-size: .75rem; font-weight: bold; color: #C0392B;
+    display: block; margin-bottom: 3px;
+  }
+  .wett-field-wrap input {
+    width: 100%; border: 1px solid #e0a0a0; border-radius: 5px;
+    padding: 5px 7px; font-size: .8rem; background: #fff;
+    font-family: Arial, sans-serif;
+  }
+  .wett-field-wrap input:focus { outline: 2px solid #C0392B; border-color: #C0392B; }
+  .wett-hint {
+    font-size: .72rem; color: #C0392B; margin-top: 4px;
+    display: flex; align-items: center; gap: 4px;
+  }
+
 </style>
 </head>
 <body>
@@ -579,6 +656,94 @@ const BRANCHEN = [
       },
     ]
   },
+
+  {
+    id: "handwerk", icon: "🔨", name: "Handwerk",
+    intro: "Abfallanalyse für Handwerksbetriebe aller Gewerke",
+    color: "#7B3F00",
+    sections: [
+      {
+        title: "Betriebsprofil", icon: "🏢",
+        fields: [
+          { id:"q1", type:"text", label:"Gewerk / Fachrichtung (z. B. Sanitär, Elektro, Maler, Schreiner)?" },
+          { id:"q2", type:"text", label:"Anzahl Mitarbeitende / Gesellen?" },
+          { id:"q3", type:"text", label:"Anzahl aktiver Baustellen / Aufträge pro Monat?" },
+          { id:"q4", type:"text", label:"Bestehender Entsorgungspartner?" },
+        ]
+      },
+      {
+        title: "Abfallfraktionen", icon: "♻️",
+        fields: [
+          { id:"c1", type:"check", label:"Welche Abfälle fallen regelmäßig an?",
+            options:["Bauschutt / Abbruchmaterial","Altholz","Metallschrott","Kabel / Leitungen","Kunststoffreste","Dämmstoffe / Mineralwolle","Verpackungen (Karton/Folie)","Lösemittel / Reiniger","Lacke / Farbreste","Leere Gebinde / Spraydosen","Elektronikschrott","Restmüll (gemischt)","Altreifen (Fahrzeuge)","Sonstiges"] },
+          { id:"q5", type:"textarea", label:"Fallen gefährliche Abfälle an (Lösemittel, Asbest, KMF)?" },
+          { id:"q6", type:"text",     label:"Durchschnittliches Abfallvolumen pro Woche (ca.)?" },
+          { id:"q7", type:"textarea", label:"Werden Abfälle aktuell selbst zur Deponie gebracht?" },
+        ]
+      },
+      {
+        title: "Logistik & Behälter", icon: "🚐",
+        fields: [
+          { id:"q8",  type:"textarea", label:"Werden Container / Big Bags auf Baustellen benötigt?" },
+          { id:"q9",  type:"text",     label:"Wie kurzfristig muss Entsorgung verfügbar sein?" },
+          { id:"q10", type:"textarea", label:"Gibt es einen Betriebshof / Lagerplatz für Abfälle?" },
+          { id:"q11", type:"textarea", label:"Werden Entsorgungsnachweise für Auftraggeber benötigt?" },
+        ]
+      },
+      {
+        title: "Optimierungspotenzial", icon: "💡",
+        fields: [
+          { id:"q12", type:"textarea", label:"Größte Herausforderungen bei der aktuellen Entsorgung?" },
+          { id:"q13", type:"textarea", label:"Interesse an flexiblem Container-Abrufservice?" },
+          { id:"q14", type:"textarea", label:"Interesse an Rahmenvertrag für laufende Projekte?" },
+        ]
+      },
+    ]
+  },
+  {
+    id: "dienstleistung", icon: "💼", name: "Dienstleistung",
+    intro: "Abfallanalyse für Dienstleistungsunternehmen & freie Berufe",
+    color: "#2C3E6B",
+    sections: [
+      {
+        title: "Betriebsprofil", icon: "🏢",
+        fields: [
+          { id:"q1", type:"text", label:"Art des Dienstleistungsunternehmens (z. B. Reinigung, Sicherheit, IT, Beratung)?" },
+          { id:"q2", type:"text", label:"Anzahl Mitarbeitende am Standort?" },
+          { id:"q3", type:"text", label:"Anzahl Standorte / Filialen?" },
+          { id:"q4", type:"text", label:"Bestehender Entsorgungspartner?" },
+        ]
+      },
+      {
+        title: "Abfallfraktionen", icon: "♻️",
+        fields: [
+          { id:"c1", type:"check", label:"Welche Abfälle fallen regelmäßig an?",
+            options:["Papier / Akten (vertraulich)","Papier / Akten (nicht vertraulich)","Verpackungen","Elektronikschrott (IT)","Restmüll","Reinigungsmittelgebinde","Textilien / Arbeitskleidung","Sperrmüll (Mobiliar)","Leuchtstoffröhren / Batterien","Hygieneartikel / Sanitärabfälle","Sonstiges"] },
+          { id:"q5", type:"text",     label:"Monatliches Papier-/Aktenaufkommen (ca.)?" },
+          { id:"q6", type:"textarea", label:"Wie werden vertrauliche Dokumente aktuell vernichtet?" },
+          { id:"q7", type:"textarea", label:"Fallen bei Kundenbesuchen / außerhalb Abfälle an?" },
+        ]
+      },
+      {
+        title: "Datenschutz & Compliance", icon: "🔒",
+        fields: [
+          { id:"q8",  type:"text",     label:"Gibt es einen Datenschutzbeauftragten?" },
+          { id:"q9",  type:"textarea", label:"Werden Vernichtungszertifikate für Kunden benötigt?" },
+          { id:"q10", type:"textarea", label:"Gibt es Anforderungen an Sicherheitsstufen (DIN 66399)?" },
+          { id:"q11", type:"textarea", label:"Bestehen besondere Compliance-Anforderungen (ISO, TISAX etc.)?" },
+        ]
+      },
+      {
+        title: "Optimierungspotenzial", icon: "💡",
+        fields: [
+          { id:"q12", type:"textarea", label:"Größte Herausforderungen bei der aktuellen Entsorgung?" },
+          { id:"q13", type:"textarea", label:"Interesse an zertifizierter Aktenvernichtung (BDSG)?" },
+          { id:"q14", type:"textarea", label:"Interesse an regelmäßiger IT-Schrott-Abholung?" },
+          { id:"q15", type:"textarea", label:"Interesse an Gesamtlösung für alle Standorte?" },
+        ]
+      },
+    ]
+  },
   {
     id: "buero", icon: "🏢", name: "Büro & Verwaltung",
     intro: "Abfallanalyse für Büros, Behörden und Dienstleistungsunternehmen",
@@ -697,6 +862,9 @@ function loadBranche(b) {
     let qNr = 1;
     sec.fields.forEach(f => {
       if (f.type === "check") {
+        renderFraktionsTabelle(f, secBody, b);
+        return; // Tabelle wurde bereits eingefügt
+        // Legacy-Code (nicht mehr aktiv):
         const wrap = document.createElement("div");
         wrap.innerHTML = `<div class="check-label-main">${f.label}</div>`;
         const grid = document.createElement("div");
@@ -871,8 +1039,57 @@ function showSummary() {
     sec.fields.forEach(f => {
       const v = formData[f.id];
       if (f.type === "check") {
-        const chips = (v && v.length) ? v.map(x => `<span class="chip">${x}</span>`).join("") : `<span style="color:#aaa;font-size:.85rem;">Keine Auswahl</span>`;
-        secEl.innerHTML += `<div class="summary-row"><div class="sq-label" style="min-width:100%;font-size:.85rem;color:#555;margin-bottom:6px;">${f.label}</div></div><div class="chips" style="margin-bottom:12px;">${chips}</div>`;
+        // Fraktions-Tabelle in Zusammenfassung
+        let frakRows = "";
+        let nehlsenCount = 0;
+        f.options.forEach((opt, idx) => {
+          const rowId = f.id + "_" + idx;
+          const fd = formData["frak_" + rowId] || {};
+          const nehlsen = fd.nehlsen === "ja";
+          const wett = fd.wett === "ja";
+          const menge = fd.menge || "—";
+          const rhythmus = fd.rhythmus || "—";
+          if (!nehlsen && !wett && menge === "—" && rhythmus === "—") return; // leer überspringen
+          if (nehlsen) nehlsenCount++;
+          const bg = nehlsen ? "#e8f5e9" : wett ? "#fdecea" : "#fff";
+          const wett_menge = fd.wett_menge || "";
+          const wett_rhythmus = fd.wett_rhythmus || "";
+          const wett_preis = fd.wett_preis || "";
+          const badge = nehlsen ? '<span style="background:#1A7A3C;color:#fff;border-radius:4px;padding:2px 6px;font-size:.72rem;">✅ Nehlsen</span>' 
+                      : wett    ? '<span style="background:#C0392B;color:#fff;border-radius:4px;padding:2px 6px;font-size:.72rem;">❌ Wettbewerb</span>'
+                      : '<span style="background:#E67E22;color:#fff;border-radius:4px;padding:2px 6px;font-size:.72rem;">🔶 Offen</span>';
+          const wettDetail = wett && (wett_menge || wett_rhythmus || wett_preis) ? 
+            `<tr style="background:#fff0f0;border-bottom:1px solid #eee;">
+              <td colspan="4" style="padding:4px 8px 6px 20px;font-size:.76rem;color:#C0392B;">
+                📦 Menge: <b>${wett_menge||"—"}</b> &nbsp;|&nbsp; 
+                🔄 Rhythmus: <b>${wett_rhythmus||"—"}</b> &nbsp;|&nbsp; 
+                💰 Preis: <b>${wett_preis||"—"}</b>
+              </td>
+            </tr>` : "";
+          frakRows += `<tr style="background:${bg};border-bottom:1px solid #eee;">
+            <td style="padding:5px 8px;font-weight:bold;font-size:.8rem;">${opt}</td>
+            <td style="padding:5px 8px;text-align:center;">${badge}</td>
+            <td style="padding:5px 8px;font-size:.8rem;">${menge}</td>
+            <td style="padding:5px 8px;font-size:.8rem;">${rhythmus}</td>
+          </tr>${wettDetail}`;
+        });
+        if (frakRows) {
+          secEl.innerHTML += `
+            <div style="margin-bottom:12px;">
+              <div style="font-size:.85rem;font-weight:bold;color:#555;margin-bottom:6px;">${f.label}</div>
+              <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
+                <thead><tr style="background:var(--blue);color:#fff;">
+                  <th style="padding:6px 8px;text-align:left;">Fraktion</th>
+                  <th style="padding:6px 8px;text-align:center;">Status</th>
+                  <th style="padding:6px 8px;text-align:left;">Menge (Nehlsen)</th>
+                  <th style="padding:6px 8px;text-align:left;">Rhythmus (Nehlsen)</th>
+                </tr></thead>
+                <tbody>${frakRows}</tbody>
+              </table>
+            </div>`;
+        } else {
+          secEl.innerHTML += `<div style="color:#aaa;font-size:.85rem;margin-bottom:12px;">Keine Fraktionen erfasst</div>`;
+        }
       } else {
         const val = (v && v.trim()) ? v : `<span style="color:#aaa;">—</span>`;
         secEl.innerHTML += `<div class="summary-row"><div class="sq" style="background:var(--blue)">${qNr++}</div><div class="sa"><div class="sq-label">${f.label}</div><div class="sq-val">${val}</div></div></div>`;
@@ -930,6 +1147,172 @@ init();
 </script>
 
 <script>
+
+// ─── FRAKTIONS-TABELLE RENDERN ────────────────────────────────────────────────
+function renderFraktionsTabelle(f, secBody, b) {
+  const wrap = document.createElement("div");
+
+  // Legende
+  wrap.innerHTML = `
+    <div class="check-label-main" style="margin-bottom:8px;">${f.label}</div>
+    <div class="frak-legend">
+      <span><span class="leg-dot" style="background:#1A7A3C"></span> Bereits bei Nehlsen</span>
+      <span><span class="leg-dot" style="background:#C0392B"></span> Beim Wettbewerb / Selbst</span>
+      <span><span class="leg-dot" style="background:#E67E22"></span> Potenzial / Offen</span>
+    </div>`;
+
+  const table = document.createElement("table");
+  table.className = "frak-table";
+  table.innerHTML = `<thead><tr>
+    <th>Fraktion</th>
+    <th>Bei Nehlsen?</th>
+    <th>Wettbewerb?</th>
+    <th>Menge / Behälter</th>
+    <th>Abholrhythmus</th>
+  </tr></thead>`;
+
+  const tbody = document.createElement("tbody");
+
+  f.options.forEach((opt, idx) => {
+    const rowId = f.id + "_" + idx;
+    const tr = document.createElement("tr");
+    tr.id = "row_" + rowId;
+
+    // Fraktion Name
+    const tdName = document.createElement("td");
+    tdName.style.fontWeight = "bold";
+    tdName.style.color = "var(--blue)";
+    tdName.textContent = opt;
+
+    // Bei Nehlsen Toggle
+    const tdNehlsen = document.createElement("td");
+    tdNehlsen.innerHTML = `<div class="tog-wrap">
+      <button class="tog-btn" data-row="${rowId}" data-col="nehlsen" data-val="ja" onclick="togFrak(this)">✅ Ja</button>
+    </div>`;
+
+    // Wettbewerb Toggle
+    const tdWett = document.createElement("td");
+    tdWett.innerHTML = `<div class="tog-wrap">
+      <button class="tog-btn" data-row="${rowId}" data-col="wett" data-val="ja" onclick="togFrak(this)">❌ Ja</button>
+    </div>`;
+
+    // Menge
+    const tdMenge = document.createElement("td");
+    tdMenge.innerHTML = `<input class="frak-input" type="text" placeholder="z. B. 1,1m³ Container" 
+      oninput="saveFrak('${rowId}','menge',this.value)">`;
+
+    // Rhythmus
+    const tdRhythmus = document.createElement("td");
+    tdRhythmus.innerHTML = `<input class="frak-input" type="text" placeholder="z. B. 2x/Woche" 
+      oninput="saveFrak('${rowId}','rhythmus',this.value)">`;
+
+    tr.appendChild(tdName);
+    tr.appendChild(tdNehlsen);
+    tr.appendChild(tdWett);
+    tr.appendChild(tdMenge);
+    tr.appendChild(tdRhythmus);
+    tbody.appendChild(tr);
+
+    // Wettbewerb-Detail-Zeile (versteckt, wird bei Wettbewerb-Klick sichtbar)
+    const detailTr = document.createElement("tr");
+    detailTr.id = "wett_detail_" + rowId;
+    detailTr.className = "wett-detail-row";
+    const detailTd = document.createElement("td");
+    detailTd.colSpan = 5;
+    detailTd.className = "wett-detail-cell";
+    detailTd.innerHTML = `
+      <div class="wett-hint">❌ Wettbewerb – bitte Details erfassen:</div>
+      <div class="wett-detail-inner" style="margin-top:6px;">
+        <div class="wett-field-wrap">
+          <label>Menge / Behälter (Wettbewerb)</label>
+          <input type="text" id="wett_menge_${rowId}" placeholder="z. B. 1,1m³ Container"
+            oninput="saveFrak('${rowId}','wett_menge',this.value)">
+        </div>
+        <div class="wett-field-wrap">
+          <label>Abholrhythmus (Wettbewerb)</label>
+          <input type="text" id="wett_rhythmus_${rowId}" placeholder="z. B. 1x pro Woche"
+            oninput="saveFrak('${rowId}','wett_rhythmus',this.value)">
+        </div>
+        <div class="wett-field-wrap">
+          <label>💰 Wettbewerbspreis (€/t oder €/Leerung)</label>
+          <input type="text" id="wett_preis_${rowId}" placeholder="z. B. 120 €/t"
+            oninput="saveFrak('${rowId}','wett_preis',this.value)">
+        </div>
+      </div>`;
+    detailTr.appendChild(detailTd);
+    tbody.appendChild(detailTr);
+  });
+
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  secBody.appendChild(wrap);
+}
+
+function togFrak(btn) {
+  const row = btn.dataset.row;
+  const col = btn.dataset.col;
+  const isActive = btn.classList.contains("active-ja") || btn.classList.contains("active-nein");
+
+  if (isActive) {
+    btn.classList.remove("active-ja","active-nein");
+    saveFrak(row, col, "");
+  } else {
+    // Wenn Nehlsen aktiviert wird → Wettbewerb deaktivieren und umgekehrt
+    if (col === "nehlsen") {
+      const wettBtn = document.querySelector(`.tog-btn[data-row="${row}"][data-col="wett"]`);
+      if (wettBtn) { wettBtn.classList.remove("active-ja","active-nein"); saveFrak(row,"wett",""); }
+      hideWettDetail(row);
+      btn.classList.add("active-ja");
+      saveFrak(row, col, "ja");
+    } else {
+      // Wettbewerb aktiviert → Nehlsen deaktivieren, Detail-Zeile zeigen
+      const nehlsenBtn = document.querySelector(`.tog-btn[data-row="${row}"][data-col="nehlsen"]`);
+      if (nehlsenBtn) { nehlsenBtn.classList.remove("active-ja","active-nein"); saveFrak(row,"nehlsen",""); }
+      btn.classList.add("active-nein");
+      saveFrak(row, col, "ja");
+      showWettDetail(row);
+    }
+  }
+  updateRowColor(row);
+  autoSave();
+}
+
+function showWettDetail(rowId) {
+  const detailRow = document.getElementById("wett_detail_" + rowId);
+  if (detailRow) detailRow.classList.add("visible");
+}
+
+function hideWettDetail(rowId) {
+  const detailRow = document.getElementById("wett_detail_" + rowId);
+  if (detailRow) detailRow.classList.remove("visible");
+  // Werte löschen
+  ["wett_menge","wett_rhythmus","wett_preis"].forEach(k => {
+    const inp = document.getElementById(k + "_" + rowId);
+    if (inp) inp.value = "";
+    if (!formData["frak_" + rowId]) formData["frak_" + rowId] = {};
+    formData["frak_" + rowId][k] = "";
+  });
+}
+
+function updateRowColor(rowId) {
+  const tr = document.getElementById("row_" + rowId);
+  if (!tr) return;
+  const data = formData["frak_" + rowId] || {};
+  if (data.nehlsen === "ja") {
+    tr.className = "row-nehlsen";
+  } else {
+    tr.className = "";
+  }
+}
+
+function saveFrak(rowId, col, val) {
+  const key = "frak_" + rowId;
+  if (!formData[key]) formData[key] = {};
+  formData[key][col] = val;
+  updateProgress();
+  autoSave();
+}
+
 // ─── PWA SERVICE WORKER ───────────────────────────────────────────────────────
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js").catch(e => console.log("SW:", e));
@@ -1010,6 +1393,83 @@ function printPDF() {
   .check-item.checked { background: #e0eefc !important; border-color: #003B6E !important; }
   .progress-bar-wrap { display: none; }
 }
+
+  /* ── FRAKTIONS-TABELLE ─────────────────────────────────────────────────── */
+  .frak-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: .82rem; }
+  .frak-table thead tr { background: var(--blue); color: #fff; }
+  .frak-table thead th { padding: 8px 10px; text-align: left; font-weight: bold; font-size: .8rem; }
+  .frak-table thead th:nth-child(1) { width: 26%; }
+  .frak-table thead th:nth-child(2) { width: 14%; text-align:center; }
+  .frak-table thead th:nth-child(3) { width: 14%; text-align:center; }
+  .frak-table thead th:nth-child(4) { width: 23%; }
+  .frak-table thead th:nth-child(5) { width: 23%; }
+  .frak-table tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
+  .frak-table tbody tr:hover { background: #f0f7ff; }
+  .frak-table tbody tr.row-nehlsen { background: #e8f5e9; }
+  .frak-table tbody tr.row-nehlsen:hover { background: #d4edda; }
+  .frak-table td { padding: 7px 8px; vertical-align: middle; }
+  .frak-table td:nth-child(2), .frak-table td:nth-child(3) { text-align: center; }
+
+  /* Toggle-Buttons statt Checkboxen */
+  .tog-wrap { display: flex; justify-content: center; gap: 4px; }
+  .tog-btn {
+    border: 2px solid var(--border); border-radius: 5px;
+    padding: 4px 8px; font-size: .75rem; font-weight: bold;
+    cursor: pointer; background: #fff; color: #888;
+    transition: background .15s, color .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  .tog-btn.active-ja  { background: #1A7A3C; color: #fff; border-color: #1A7A3C; }
+  .tog-btn.active-nein{ background: #C0392B; color: #fff; border-color: #C0392B; }
+  .tog-btn.active-pot { background: #E67E22; color: #fff; border-color: #E67E22; }
+
+  .frak-input {
+    width: 100%; border: 1px solid var(--border); border-radius: 5px;
+    padding: 5px 7px; font-size: .8rem; background: var(--ans);
+    font-family: Arial, sans-serif;
+  }
+  .frak-input:focus { outline: 2px solid var(--mid); border-color: var(--mid); }
+
+  .frak-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; font-size: .78rem; }
+  .frak-legend span { display: flex; align-items: center; gap: 4px; }
+  .leg-dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+  @media(max-width: 600px) {
+    .frak-table thead th:nth-child(4),
+    .frak-table thead th:nth-child(5),
+    .frak-table td:nth-child(4),
+    .frak-table td:nth-child(5) { display: none; }
+    .frak-table thead th:nth-child(1) { width: 50%; }
+  }
+
+
+  /* ── WETTBEWERB-DETAIL-ZEILE ─────────────────────────────────────────── */
+  .wett-detail-row { display: none; background: #fff5f5; }
+  .wett-detail-row.visible { display: table-row; }
+  .wett-detail-cell { padding: 6px 8px 10px 8px !important; }
+  .wett-detail-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  @media(max-width:600px) {
+    .wett-detail-inner { grid-template-columns: 1fr; }
+  }
+  .wett-field-wrap label {
+    font-size: .75rem; font-weight: bold; color: #C0392B;
+    display: block; margin-bottom: 3px;
+  }
+  .wett-field-wrap input {
+    width: 100%; border: 1px solid #e0a0a0; border-radius: 5px;
+    padding: 5px 7px; font-size: .8rem; background: #fff;
+    font-family: Arial, sans-serif;
+  }
+  .wett-field-wrap input:focus { outline: 2px solid #C0392B; border-color: #C0392B; }
+  .wett-hint {
+    font-size: .72rem; color: #C0392B; margin-top: 4px;
+    display: flex; align-items: center; gap: 4px;
+  }
+
 </style>
 
 </body>
