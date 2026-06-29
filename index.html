@@ -320,6 +320,7 @@
 <div id="screen-select">
   <h1>Branche auswählen</h1>
   <p>Wählen Sie die Branche des Kunden — der passende Abfragebogen wird automatisch geladen.</p>
+  <div id="kunde-select-hint" style="display:none;background:#1A7A3C;color:#fff;border-radius:8px;padding:10px 16px;margin-bottom:16px;font-size:.9rem;font-weight:bold;"></div>
   <div class="branch-grid" id="branch-grid"></div>
 </div>
 
@@ -1142,6 +1143,8 @@ function goHome() {
   document.getElementById("screen-summary").style.display = "none";
   document.getElementById("screen-select").style.display = "block";
   var b = document.getElementById('kunde-banner'); if(b) b.style.display='none';
+  var h = document.getElementById('kunde-select-hint'); if(h) h.style.display='none';
+  currentKunde = null;
   document.getElementById("btn-print").style.display = "none";
   document.getElementById("btn-summary").style.display = "none";
   document.getElementById("btn-reset").style.display = "none";
@@ -1439,7 +1442,7 @@ function renderKunden(filter) {
       '<td><strong>' + (k.name||'—') + '</strong></td>' +
       '<td>' + (k.ort||'—') + '</td>' +
       '<td>' + (k.branche||'—') + '</td>' +
-      '<td><button class="btn btn-primary btn-xs btn-sm" onclick="kundeAuswaehlen(' + JSON.stringify(k.id) + ')">📋 Bogen starten</button></td>';
+      '<td><button class="btn btn-primary btn-xs btn-sm" onclick="kundeAuswaehlen(this.dataset.id)" data-id="' + (k.id||'').replace(/"/g,'&quot;') + '">📋 Bogen starten</button></td>';
     tbody.appendChild(tr);
   });
 }
@@ -1451,11 +1454,23 @@ function filterKunden() {
 
 function kundeAuswaehlen(id) {
   var k = kundenListe.find(function(x){ return x.id === id; });
+  if (!k) {
+    // fallback: search by debitor
+    k = kundenListe.find(function(x){ return x.debitor === id; });
+  }
   if (!k) return;
   currentKunde = k;
-  // Show branch selector so user picks the right branch
-  goHome();
-  showToast('Kunde ausgewaehlt: ' + k.name + ' - Bitte Branche waehlen');
+  // Show branch selector with customer hint
+  document.getElementById('screen-kunden').style.display = 'none';
+  document.getElementById('screen-select').style.display = 'block';
+  document.getElementById('screen-form').style.display = 'none';
+  document.getElementById('screen-summary').style.display = 'none';
+  // Show customer hint banner on select screen
+  var hint = document.getElementById('kunde-select-hint');
+  if (hint) {
+    hint.textContent = '✅ Kunde: ' + k.name + ' (' + (k.debitor||'') + ') — Bitte Branche wählen';
+    hint.style.display = 'block';
+  }
 }
 
 function applyKundeToForm() {
