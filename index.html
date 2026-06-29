@@ -1576,7 +1576,14 @@ function parseKundenCSV(text) {
     var name = (cols[colName]||'').trim().replace(/^"|"$/g,'');
     if (!name) continue;
     var deb = colDebitor >= 0 ? (cols[colDebitor]||'').trim().replace(/^"|"$/g,'') : '';
-    if (!deb.startsWith('D040')) deb = 'D040' + deb;
+    // Debitor-Nr: immer D040 + Ziffern (z.B. D04001912)
+    // Wenn nur Ziffern vorhanden, D040 voranstellen
+    // Wenn bereits D040... vorhanden, unverändert lassen
+    deb = deb.replace(/^d/i, 'D'); // Kleinbuchstabe d -> D
+    if (!deb.match(/^D040/)) {
+      // nur Ziffern? -> D040 davor
+      deb = 'D040' + deb.replace(/[^0-9]/g,'');
+    }
     var ort = colOrt >= 0 ? (cols[colOrt]||'').trim().replace(/^"|"$/g,'') : '';
     var branche = colBranche >= 0 ? (cols[colBranche]||'').trim().replace(/^"|"$/g,'') : '';
     result.push({ id: deb || ('k_'+i), debitor: deb, name: name, ort: ort, branche: branche });
